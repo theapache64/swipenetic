@@ -8,8 +8,10 @@ import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+
 
 class SwipeneticService : TileService() {
 
@@ -61,6 +63,8 @@ class SwipeneticService : TileService() {
                 newState = Tile.STATE_ACTIVE
                 newLabel = getString(R.string.tile_label_in)
                 Toast.makeText(this.applicationContext, "You're IN", Toast.LENGTH_SHORT).show();
+
+                startInTimeUpdate()
             } else {
                 // user wants to OUT
                 swipeRepository.insertSwipe(Swipe.Type.OUT)
@@ -68,6 +72,7 @@ class SwipeneticService : TileService() {
                 newLabel = getString(R.string.tile_label_out)
 
                 Toast.makeText(this.applicationContext, "You're OUT", Toast.LENGTH_SHORT).show();
+                stopInTimeUpdate()
             }
 
             updateTile(newState, newLabel)
@@ -91,28 +96,49 @@ class SwipeneticService : TileService() {
                 // user is in
                 newLabel = getString(R.string.tile_label_in)
                 newState = Tile.STATE_ACTIVE
+
+                startInTimeUpdate()
             } else {
                 newLabel = getString(R.string.tile_label_out)
                 newState = Tile.STATE_INACTIVE
+                stopInTimeUpdate()
             }
 
             // Updating tile
             updateTile(newState, newLabel)
         }
 
-        this.timer = Timer()
-        this.timer!!.scheduleAtFixedRate(
-            object : TimerTask() {
-                override fun run() {
+    }
+
+    private fun startInTimeUpdate() {
+        // Update total in time in each second
+        swipeRepository.getInSwipesTodayInMillis { _totalInSwipeInMs ->
+            timer?.cancel()
+            timer = Timer()
+            var totalInSwipeInMs = _totalInSwipeInMs
+            timer!!.scheduleAtFixedRate(
+                object : TimerTask() {
+                    override fun run() {
+                        val toHHMM = toHHMM(totalInSwipeInMs)
+                        updateTile(Tile.STATE_ACTIVE, toHHMM)
+                        totalInSwipeInMs += 1000
+                    }
+                },
+                0, 1000
+            )
+        }
+
+    }
 
 
-
-                }
-            }, 0, 1000
-        )
-
-
-
+    private fun toHHMM(ms: Long): String {
+        // New date object from millis
+        val date = Date(ms)
+        val df = SimpleDateFormat("HH:mm:ss")
+        df.timeZone = TimeZone.getTimeZone("UTC")
+        val x = df.format(date)
+        info("ms: $ms, x: $x ")
+        return x
     }
 
     private fun updateTile(newState: Int, newLabel: String) {
@@ -124,8 +150,12 @@ class SwipeneticService : TileService() {
 
     override fun onStopListening() {
         super.onStopListening()
-        timer?.cancel()
+        stopInTimeUpdate()
         info("Tile stopped listening")
+    }
+
+    private fun stopInTimeUpdate() {
+        timer?.cancel()
     }
 
 
