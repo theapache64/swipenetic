@@ -8,10 +8,12 @@ import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
 class SwipeneticService : TileService() {
 
+    private var timer: Timer? = null
     @Inject
     lateinit var swipeRepository: SwipeRepository
 
@@ -98,6 +100,18 @@ class SwipeneticService : TileService() {
             updateTile(newState, newLabel)
         }
 
+        this.timer = Timer()
+        this.timer!!.scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+
+
+
+                }
+            }, 0, 1000
+        )
+
+
 
     }
 
@@ -110,7 +124,7 @@ class SwipeneticService : TileService() {
 
     override fun onStopListening() {
         super.onStopListening()
-
+        timer?.cancel()
         info("Tile stopped listening")
     }
 
