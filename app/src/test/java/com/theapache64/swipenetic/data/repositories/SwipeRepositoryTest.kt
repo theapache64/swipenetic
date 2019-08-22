@@ -61,7 +61,7 @@ class SwipeRepositoryTest {
                 }
             } else {
                 // in swipe with current time
-                val currentTime = System.currentTimeMillis()
+                val currentTime = 9000
                 swipeSessions.add(
                     SwipeSession(
                         Swipe.Type.IN,
