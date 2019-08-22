@@ -15,6 +15,12 @@ import javax.inject.Inject
 
 class SwipeneticService : TileService() {
 
+    private val df = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+    init {
+        df.timeZone = TimeZone.getTimeZone("UTC")
+    }
+
     private var timer: Timer? = null
     @Inject
     lateinit var swipeRepository: SwipeRepository
@@ -134,8 +140,6 @@ class SwipeneticService : TileService() {
     private fun toHHMM(ms: Long): String {
         // New date object from millis
         val date = Date(ms)
-        val df = SimpleDateFormat("HH:mm:ss")
-        df.timeZone = TimeZone.getTimeZone("UTC")
         val x = df.format(date)
         info("ms: $ms, x: $x ")
         return x
