@@ -5,4 +5,6 @@
     <string name="tile_label_in">IN</string>
     <string name="tile_label_out">OUT</string>
     <string name="label_quick_tracker">Quick Tracker</string>
+    <string name="label_to">to</string>
+    <string name="action_change_date">Change Date</string>
 </resources>

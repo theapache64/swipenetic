@@ -41,6 +41,9 @@
     <data>
 
         <variable
+            name="handler"
+            type="com.theapache64.swipenetic.ui.activities.main.MainHandler" />
+        <variable
             name="viewModel"
             type="com.theapache64.swipenetic.ui.activities.main.MainViewModel" />
     </data>

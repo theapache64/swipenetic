@@ -1,11 +1,13 @@
 package com.theapache64.swipenetic.ui.activities.main
 
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,9 +18,11 @@ import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
-class MainActivity : BaseAppCompatActivity() {
+class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDateSetListener {
+
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -34,6 +38,9 @@ class MainActivity : BaseAppCompatActivity() {
 
         this.viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
         binding.viewModel = viewModel
+        binding.handler = this
+
+        // Watching for swipe sessions
 
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -50,13 +57,42 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
+        when (item.itemId) {
+            R.id.action_change_date -> {
+                showChangeDateCalendar()
+            }
+            else -> return super.onOptionsItemSelected(item)
         }
+
+        return true
+    }
+
+    private fun showChangeDateCalendar() {
+
+        val calendar = viewModel.currentDate
+        val datePickerDialog = DatePickerDialog(
+            this,
+            this,
+            calendar.value!!.get(Calendar.YEAR),
+            calendar.value!!.get(Calendar.MONTH),
+            calendar.value!!.get(Calendar.DAY_OF_MONTH)
+        )
+        datePickerDialog.datePicker.apply {
+            maxDate = Date().time
+        }
+
+        datePickerDialog.show()
+    }
+
+
+    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        viewModel.setNewDate(
+            Calendar.getInstance().apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month)
+                set(Calendar.DAY_OF_MONTH, dayOfMonth)
+            }
+        )
     }
 
     companion object {

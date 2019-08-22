@@ -1,8 +1,13 @@
 package com.theapache64.swipenetic.data.repositories
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
+import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.twinkill.utils.AppExecutors
+import com.theapache64.twinkill.utils.DateUtils
+import com.theapache64.twinkill.utils.Resource
 import java.util.*
 import javax.inject.Inject
 
@@ -39,6 +44,9 @@ class SwipeRepository @Inject constructor(
         }
     }
 
+    /**
+     * To get in time in milliseconds from swipe list
+     */
     private fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
         when {
             swipes.isEmpty() -> throw IllegalArgumentException("No swipe data found")
@@ -65,6 +73,43 @@ class SwipeRepository @Inject constructor(
                 return totalSwipesInMs
             }
         }
+    }
+
+
+    fun getSwipeSessions(date: Calendar): LiveData<Resource<List<SwipeSession>>> {
+        val swipeSessions = MutableLiveData<Resource<List<SwipeSession>>>()
+
+        // loading
+        swipeSessions.value = Resource.loading()
+        appExecutors.diskIO().execute {
+            val date = DateUtils.toDDMMYYY(date.time)
+            val swipes = swipeDao.getSwipes(date)
+            val swipeSessions = getSwipeSessionsFromSwipes(swipes)
+        }
+
+        return swipeSessions
+    }
+
+    private fun getSwipeSessionsFromSwipes(swipes: List<Swipe>): List<SwipeSession> {
+
+        val swipeSessions = mutableListOf<SwipeSession>()
+        val isUserIn = swipes.size % 2 != 0
+        val swipeSize = if (isUserIn) (swipes.size - 2) else (swipes.size - 1)
+
+        for (i in 0..swipeSize step 2) {
+            val swipeIn = swipes[i]
+            val swipeOut = swipes[i + 1]
+
+            val swipeSession = getSwipeSessionFrom(swipeIn, swipeOut)
+            swipeSessions.add(swipeSession)
+        }
+
+        return swipeSessions
+
+    }
+
+    private fun getSwipeSessionFrom(swipeIn: Swipe, swipeOut: Swipe): SwipeSession {
+        return null!!
     }
 
 }

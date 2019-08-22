@@ -14,7 +14,7 @@ import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class SplashActivity : BaseAppCompatActivity() {
+class SplashActivity : BaseAppCompatActivity(), SplashHandler {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -26,6 +26,7 @@ class SplashActivity : BaseAppCompatActivity() {
         val binding = bindContentView<ActivitySplashBinding>(R.layout.activity_splash)
         val viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
         binding.viewModel = viewModel
+        binding.handler = this
 
         // Watching activity launch command
         viewModel.getLaunchActivityEvent().observe(this, Observer { activityId ->

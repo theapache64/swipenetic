@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--Swipe type-->
+            <TextView
+                android:id="@+id/tv_swipe_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@{swipeSession.type.name()}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="IN" />
+
+            <!--Duration-->
+            <TextView
+                android:id="@+id/tv_swipe_duration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey_900"
+                android:textSize="34sp"
+                app:layout_constraintEnd_toEndOf="@id/tv_swipe_type"
+                app:layout_constraintStart_toStartOf="@id/tv_swipe_type"
+                app:layout_constraintTop_toBottomOf="@id/tv_swipe_type"
+                tools:text="2 hours" />
+
+            <!--From-->
+            <TextView
+                android:id="@+id/tv_from"
+                style="@style/tvFromToSyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{swipeSession.timeFrom}"
+                app:layout_constraintEnd_toStartOf="@id/tv_to_label"
+                app:layout_constraintStart_toStartOf="@id/tv_swipe_duration"
+                app:layout_constraintTop_toBottomOf="@id/tv_swipe_duration"
+                tools:text="10:00 AM" />
+
+            <!--to label-->
+            <TextView
+                android:id="@+id/tv_to_label"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="@string/label_to"
+                android:textColor="@color/grey_500"
+                app:layout_constraintBottom_toBottomOf="@id/tv_from"
+                app:layout_constraintEnd_toStartOf="@id/tv_to"
+                app:layout_constraintStart_toEndOf="@id/tv_from"
+                app:layout_constraintTop_toTopOf="@id/tv_from" />
+
+            <!--To-->
+            <TextView
+                android:id="@+id/tv_to"
+                style="@style/tvFromToSyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="@{swipeSession.timeTo}"
+                app:layout_constraintEnd_toEndOf="@id/tv_swipe_duration"
+                app:layout_constraintStart_toEndOf="@id/tv_to_label"
+                app:layout_constraintTop_toTopOf="@id/tv_to_label"
+                tools:text="12:00PM" />
+
+            <View
+                android:id="@+id/v_type_bg"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="18dp"
+                android:background="@{swipeSession.isTypeIn() ? @color/green_500 : @color/red_500}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_to"
+                tools:background="@color/green_500" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <data>
+
+        <variable
+            name="swipeSession"
+            type="com.theapache64.swipenetic.models.SwipeSession" />
+    </data>
+</layout>

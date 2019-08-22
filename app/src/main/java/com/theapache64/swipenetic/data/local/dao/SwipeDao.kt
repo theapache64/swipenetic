@@ -16,4 +16,9 @@ interface SwipeDao {
 
     @Query("SELECT * FROM swipes WHERE strftime('%Y-%m-%d', timestamp / 1000, 'unixepoch') = date('now')")
     fun getSwipesToday(): List<Swipe>
+
+    @Query("SELECT * FROM swipes WHERE strftime('%d-%m-%Y', timestamp / 1000, 'unixepoch') = :date")
+    fun getSwipes(date: String): List<Swipe>
+
+
 }

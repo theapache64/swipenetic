@@ -17,4 +17,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="tvFromToSyle">
+        <item name="android:textColor">@color/grey_800</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>
