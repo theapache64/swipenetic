@@ -23,6 +23,7 @@ class SwipeRepositoryTest {
         )
 
         val swipeSessions = mutableListOf<SwipeSession>()
+
         for (i in 0 until swipes.size step 2) {
             val inSwipe = swipes[i]
             val outSwipeIndex = i + 1

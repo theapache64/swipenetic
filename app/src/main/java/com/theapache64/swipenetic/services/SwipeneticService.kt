@@ -6,20 +6,14 @@ import android.widget.Toast
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
+import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
 class SwipeneticService : TileService() {
-
-    private val df = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-
-    init {
-        df.timeZone = TimeZone.getTimeZone("UTC")
-    }
 
     private var timer: Timer? = null
     @Inject
@@ -125,7 +119,7 @@ class SwipeneticService : TileService() {
             timer!!.scheduleAtFixedRate(
                 object : TimerTask() {
                     override fun run() {
-                        val toHHMM = toHHMM(totalInSwipeInMs)
+                        val toHHMM = DateUtils2.toHHmmss(totalInSwipeInMs)
                         updateTile(Tile.STATE_ACTIVE, toHHMM)
                         totalInSwipeInMs += 1000
                     }
@@ -136,14 +130,6 @@ class SwipeneticService : TileService() {
 
     }
 
-
-    private fun toHHMM(ms: Long): String {
-        // New date object from millis
-        val date = Date(ms)
-        val x = df.format(date)
-        info("ms: $ms, x: $x ")
-        return x
-    }
 
     private fun updateTile(newState: Int, newLabel: String) {
         qsTile.apply {

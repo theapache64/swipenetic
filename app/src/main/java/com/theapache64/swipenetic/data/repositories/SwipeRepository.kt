@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.models.SwipeSession
+import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.twinkill.utils.AppExecutors
 import com.theapache64.twinkill.utils.DateUtils
 import com.theapache64.twinkill.utils.Resource
@@ -82,9 +83,14 @@ class SwipeRepository @Inject constructor(
         // loading
         swipeSessions.value = Resource.loading()
         appExecutors.diskIO().execute {
-            val date = DateUtils.toDDMMYYY(date.time)
-            val swipes = swipeDao.getSwipes(date)
-            val swipeSessions = getSwipeSessionsFromSwipes(swipes)
+            val ddmmYYYYdate = DateUtils.toDDMMYYY(date.time)
+            val swipes = swipeDao.getSwipes(ddmmYYYYdate)
+            val sessions = getSwipeSessionsFromSwipes(swipes)
+            if (sessions.isNotEmpty()) {
+                swipeSessions.postValue(Resource.success(sessions))
+            } else {
+                swipeSessions.postValue(Resource.error("No swipe found for $ddmmYYYYdate"))
+            }
         }
 
         return swipeSessions
@@ -93,23 +99,63 @@ class SwipeRepository @Inject constructor(
     private fun getSwipeSessionsFromSwipes(swipes: List<Swipe>): List<SwipeSession> {
 
         val swipeSessions = mutableListOf<SwipeSession>()
-        val isUserIn = swipes.size % 2 != 0
-        val swipeSize = if (isUserIn) (swipes.size - 2) else (swipes.size - 1)
 
-        for (i in 0..swipeSize step 2) {
-            val swipeIn = swipes[i]
-            val swipeOut = swipes[i + 1]
+        for (i in 0 until swipes.size step 2) {
 
-            val swipeSession = getSwipeSessionFrom(swipeIn, swipeOut)
-            swipeSessions.add(swipeSession)
+            val inSwipe = swipes[i]
+            val outSwipeIndex = i + 1
+
+            if (outSwipeIndex < swipes.size) {
+
+                val outSwipe = swipes[outSwipeIndex]
+
+                // In Swipe
+                swipeSessions.add(
+                    SwipeSession(
+                        Swipe.Type.IN,
+                        DateUtils2.getDuration(outSwipe.timestamp.time - inSwipe.timestamp.time),
+                        null,
+                        DateUtils2.tohmma(inSwipe.timestamp),
+                        DateUtils2.tohmma(outSwipe.timestamp)
+                    )
+                )
+
+                val inSwipeTwoIndex = i + 2
+                if (inSwipeTwoIndex < swipes.size) {
+                    val inSwipeTwo = swipes[inSwipeTwoIndex]
+
+                    // Out swipe
+                    swipeSessions.add(
+                        SwipeSession(
+                            Swipe.Type.OUT,
+                            "${inSwipeTwo.timestamp.time - outSwipe.timestamp.time}",
+                            null,
+                            "${outSwipe.timestamp.time}",
+                            "${inSwipeTwo.timestamp.time}"
+
+
+                        )
+                    )
+                }
+
+            } else {
+                // in swipe with current time
+                val currentTime = System.currentTimeMillis()
+                swipeSessions.add(
+                    SwipeSession(
+                        Swipe.Type.IN,
+                        "${currentTime - inSwipe.timestamp.time}",
+                        null,
+                        "${inSwipe.timestamp.time}",
+                        "$currentTime"
+                    )
+                )
+            }
         }
 
         return swipeSessions
 
     }
 
-    private fun getSwipeSessionFrom(swipeIn: Swipe, swipeOut: Swipe): SwipeSession {
-        return null!!
-    }
 
 }

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -15,7 +16,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
+import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
+import com.theapache64.twinkill.ui.widgets.LoadingView
+import com.theapache64.twinkill.utils.Resource
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
 import java.util.*
@@ -40,7 +44,36 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         binding.viewModel = viewModel
         binding.handler = this
 
+        val lvSwipeSessions = binding.iContentMain.lvSwipeSessions
+        lvSwipeSessions.setRetryCallback(object : LoadingView.RetryCallback {
+            override fun onRetryClicked() {
+                viewModel.loadSwipeSessions()
+            }
+        })
+
         // Watching for swipe sessions
+        viewModel.getSwipeSessions().observe(this, androidx.lifecycle.Observer {
+
+            val rvSwipeSessions = binding.iContentMain.rvSwipeSessions
+
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    rvSwipeSessions.visibility = View.GONE
+                    lvSwipeSessions.showLoading(R.string.loading_swipe_sessions)
+                }
+                Resource.Status.SUCCESS -> {
+                    lvSwipeSessions.hideLoading()
+                    val sessionsAdapter = SwipeSessionsAdapter(this, it.data!!) {
+
+                    }
+                    rvSwipeSessions.visibility = View.VISIBLE
+                    rvSwipeSessions.adapter = sessionsAdapter
+                }
+                Resource.Status.ERROR -> {
+                    lvSwipeSessions.showError(it.message!!)
+                }
+            }
+        })
 
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -86,7 +119,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
 
 
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        viewModel.setNewDate(
+        viewModel.loadSwipeSessions(
             Calendar.getInstance().apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month)
