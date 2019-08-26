@@ -4,6 +4,7 @@ package com.theapache64.swipenetic
 import android.app.*
 import android.content.Context
 import android.os.Build
+import android.service.quicksettings.Tile
 import com.theapache64.swipenetic.di.components.DaggerAppComponent
 import com.theapache64.swipenetic.di.modules.AppModule
 import com.theapache64.twinkill.TwinKill

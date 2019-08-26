@@ -12,7 +12,8 @@ object DateUtils2 {
     }
 
     private val FORMAT_h_mm_a by lazy {
-        getTimeZoneWithUTC("h:mm a")
+        val dateFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
+        dateFormat
     }
 
     private fun getTimeZoneWithUTC(format: String): SimpleDateFormat {

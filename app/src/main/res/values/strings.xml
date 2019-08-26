@@ -10,6 +10,6 @@
     <string name="loading_swipe_sessions">Loading swipe sessions...</string>
     <string name="channel_timer_name">Timer</string>
     <string name="channel_time_desc">Live tile timer</string>
-    <string name="title_live_timer">Live Timer</string>
-    <string name="content_live_timer">Live timer running in background</string>
+    <string name="notif_title_live_timer">Live Timer</string>
+    <string name="notif_content_live_timer">Live timer running in background</string>
 </resources>
