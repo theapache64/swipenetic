@@ -34,19 +34,24 @@ object DateUtils2 {
     }
 
     fun getDuration(durationInMillis: Long): String {
-        val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis)
 
-        return when (seconds) {
+        return when (val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis)) {
             0L, 1L -> "$seconds second"
             in 1..59 -> "$seconds seconds"
             60L -> "1 minute"
             in 61..3599 -> {
                 // minute and seconds
-                val minutes = TimeUnit.SECONDS.toMinutes(seconds)
-                val seconds = minutes % 60
-                "$minutes min $seconds sec."
+                val min = seconds / 60
+                val sec = seconds % 60
+                "$min min $sec sec."
             }
             3600L -> "1 hour"
+            in 3601..86399 -> {
+                // hour and minute
+                val hour = seconds / 3600
+                val minute = (seconds % 3600) / 60
+                "$hour hrs $minute min"
+            }
             else -> "NONE"
         }
     }

@@ -19,7 +19,7 @@
 
     <style name="tvFromToSyle">
         <item name="android:textColor">@color/grey_800</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

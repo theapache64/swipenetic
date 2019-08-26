@@ -1,9 +1,9 @@
 package com.theapache64.swipenetic
 
 
-import android.app.Activity
-import android.app.Application
-import android.app.Service
+import android.app.*
+import android.content.Context
+import android.os.Build
 import com.theapache64.swipenetic.di.components.DaggerAppComponent
 import com.theapache64.swipenetic.di.modules.AppModule
 import com.theapache64.twinkill.TwinKill
@@ -15,6 +15,10 @@ import dagger.android.HasServiceInjector
 import javax.inject.Inject
 
 class App : Application(), HasActivityInjector, HasServiceInjector {
+
+    companion object {
+        const val CHANNEL_TIMER_ID = "timer"
+    }
 
 
     @Inject
@@ -44,6 +48,23 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
                 .build()
         )
 
+        // Create notification channel
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_timer_name)
+            val descriptionText = getString(R.string.channel_time_desc)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_TIMER_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
 

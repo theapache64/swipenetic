@@ -113,7 +113,7 @@ class SwipeRepository @Inject constructor(
                 swipeSessions.add(
                     SwipeSession(
                         Swipe.Type.IN,
-                        DateUtils2.getDuration(outSwipe.timestamp.time - inSwipe.timestamp.time),
+                        outSwipe.timestamp.time - inSwipe.timestamp.time,
                         null,
                         DateUtils2.tohmma(inSwipe.timestamp),
                         DateUtils2.tohmma(outSwipe.timestamp)
@@ -128,32 +128,43 @@ class SwipeRepository @Inject constructor(
                     swipeSessions.add(
                         SwipeSession(
                             Swipe.Type.OUT,
-                            "${inSwipeTwo.timestamp.time - outSwipe.timestamp.time}",
+                            inSwipeTwo.timestamp.time - outSwipe.timestamp.time,
                             null,
-                            "${outSwipe.timestamp.time}",
-                            "${inSwipeTwo.timestamp.time}"
-
-
+                            DateUtils2.tohmma(outSwipe.timestamp),
+                            DateUtils2.tohmma(inSwipeTwo.timestamp)
+                        )
+                    )
+                } else {
+                    // Start out swipe session
+                    val currentTime = Date()
+                    swipeSessions.add(
+                        SwipeSession(
+                            Swipe.Type.OUT,
+                            currentTime.time - outSwipe.timestamp.time,
+                            null,
+                            DateUtils2.tohmma(outSwipe.timestamp),
+                            DateUtils2.tohmma(currentTime)
                         )
                     )
                 }
 
             } else {
+
                 // in swipe with current time
-                val currentTime = System.currentTimeMillis()
+                val now = Date()
                 swipeSessions.add(
                     SwipeSession(
                         Swipe.Type.IN,
-                        "${currentTime - inSwipe.timestamp.time}",
+                        now.time - inSwipe.timestamp.time,
                         null,
-                        "${inSwipe.timestamp.time}",
-                        "$currentTime"
+                        DateUtils2.tohmma(inSwipe.timestamp),
+                        DateUtils2.tohmma(now)
                     )
                 )
             }
         }
 
-        return swipeSessions
+        return swipeSessions.reversed()
 
     }
 

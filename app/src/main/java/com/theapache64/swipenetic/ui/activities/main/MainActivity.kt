@@ -51,6 +51,10 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             }
         })
 
+        binding.iContentMain.csrlMain.setOnRefreshListener {
+            viewModel.loadSwipeSessions()
+        }
+
         // Watching for swipe sessions
         viewModel.getSwipeSessions().observe(this, androidx.lifecycle.Observer {
 

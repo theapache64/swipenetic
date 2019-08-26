@@ -26,7 +26,8 @@ class MainViewModel @Inject constructor(
 
     fun loadSwipeSessions() {
         this.currentDate.value = Calendar.getInstance().apply {
-            time = currentDate.value!!.time
+            val newTime = currentDate.value ?: Calendar.getInstance()
+            time = newTime.time
         }
     }
 

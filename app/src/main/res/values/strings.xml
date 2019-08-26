@@ -8,4 +8,8 @@
     <string name="label_to">to</string>
     <string name="action_change_date">Change Date</string>
     <string name="loading_swipe_sessions">Loading swipe sessions...</string>
+    <string name="channel_timer_name">Timer</string>
+    <string name="channel_time_desc">Live tile timer</string>
+    <string name="title_live_timer">Live Timer</string>
+    <string name="content_live_timer">Live timer running in background</string>
 </resources>

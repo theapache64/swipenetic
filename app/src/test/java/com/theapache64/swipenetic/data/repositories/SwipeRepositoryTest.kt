@@ -12,13 +12,11 @@ class SwipeRepositoryTest {
         val swipes = listOf(
             Swipe(Date(1000), Swipe.Type.IN),
             Swipe(Date(2000), Swipe.Type.OUT),
+
             Swipe(Date(3000), Swipe.Type.IN),
-
             Swipe(Date(4000), Swipe.Type.OUT),
-            Swipe(Date(5000), Swipe.Type.IN),
-            Swipe(Date(6000), Swipe.Type.OUT),
 
-            Swipe(Date(7000), Swipe.Type.IN)
+            Swipe(Date(5000), Swipe.Type.IN)
 
         )
 
@@ -45,6 +43,7 @@ class SwipeRepositoryTest {
 
                 val inSwipeTwoIndex = i + 2
                 if (inSwipeTwoIndex < swipes.size) {
+
                     val inSwipeTwo = swipes[inSwipeTwoIndex]
 
                     // Out swipe
@@ -55,11 +54,23 @@ class SwipeRepositoryTest {
                             null,
                             "${outSwipe.timestamp.time}",
                             "${inSwipeTwo.timestamp.time}"
-
-
+                        )
+                    )
+                } else {
+                    // Start out swipe session
+                    val currentTime = 9000
+                    swipeSessions.add(
+                        SwipeSession(
+                            Swipe.Type.OUT,
+                            "S - ${currentTime - outSwipe.timestamp.time}",
+                            null,
+                            "${outSwipe.timestamp.time}",
+                            "$currentTime"
                         )
                     )
                 }
+
+
             } else {
                 // in swipe with current time
                 val currentTime = 9000

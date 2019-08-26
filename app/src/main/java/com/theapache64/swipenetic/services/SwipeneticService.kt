@@ -21,6 +21,7 @@ class SwipeneticService : TileService() {
 
     override fun onCreate() {
         super.onCreate()
+        info("Swipenetic service created")
         AndroidInjection.inject(this)
     }
 
@@ -142,10 +143,16 @@ class SwipeneticService : TileService() {
         super.onStopListening()
         stopInTimeUpdate()
         info("Tile stopped listening")
+
     }
 
     private fun stopInTimeUpdate() {
         timer?.cancel()
+    }
+
+    override fun onDestroy() {
+        info("Swipentic service destroyed")
+        super.onDestroy()
     }
 
 
