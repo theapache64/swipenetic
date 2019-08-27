@@ -1,6 +1,7 @@
 package com.theapache64.swipenetic.ui.activities.main
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,7 @@ class MainViewModel @Inject constructor(
     private val swipeRepository: SwipeRepository
 ) : ViewModel() {
 
-    val currentDate = MutableLiveData<Calendar>(Calendar.getInstance())
+    val currentDate = MutableLiveData<Calendar>()
     private val swipeSessions = Transformations.switchMap(currentDate) { date ->
         swipeRepository.getSwipeSessions(date)
     }
@@ -33,4 +34,7 @@ class MainViewModel @Inject constructor(
 
 
     fun getSwipeSessions() = swipeSessions
+    fun getSwipeChange(): LiveData<Int> {
+        return swipeRepository.getAllIds()
+    }
 }

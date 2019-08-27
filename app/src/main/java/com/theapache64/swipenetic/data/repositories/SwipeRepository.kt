@@ -168,5 +168,9 @@ class SwipeRepository @Inject constructor(
 
     }
 
+    fun getAllIds(): LiveData<Int> {
+        return swipeDao.getTotalRows()
+    }
+
 
 }
