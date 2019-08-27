@@ -1,7 +1,6 @@
 package com.theapache64.swipenetic.services
 
 import android.app.Service
-import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.service.quicksettings.Tile
@@ -12,10 +11,12 @@ import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.swipenetic.exts.updateTile
+import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
 class LiveTimeUpdateService : Service() {
@@ -23,17 +24,18 @@ class LiveTimeUpdateService : Service() {
     companion object {
 
         private var repeater = Repeater(1000)
-
-        private lateinit var tile: Tile
+        private lateinit var swipeneticTileService: SwipeneticTileService
         const val ACTION_LISTEN = "listen"
         const val ACTION_CLICK = "click"
 
-        fun getStartIntent(context: Context, action: String, tile: Tile): Intent {
-            this.tile = tile
-            return Intent(context, LiveTimeUpdateService::class.java).apply {
+        fun getStartIntent(
+            swipeneticTileService: SwipeneticTileService,
+            action: String
+        ): Intent {
+            this.swipeneticTileService = swipeneticTileService
+            return Intent(swipeneticTileService, LiveTimeUpdateService::class.java).apply {
                 // data goes here
                 this.action = action
-
             }
         }
     }
@@ -79,7 +81,7 @@ class LiveTimeUpdateService : Service() {
 
         swipeRepository.getLastSwipeToday { lastSwipe ->
 
-            val tileState = tile.state
+            val tileState = swipeneticTileService.qsTile.state
 
             // Error checks
             if (lastSwipe != null) {
@@ -115,9 +117,13 @@ class LiveTimeUpdateService : Service() {
                 Toast.makeText(this.applicationContext, "You're OUT", Toast.LENGTH_SHORT).show();
                 info("Click is for OUT, stopping timer")
                 stopInTimeUpdate()
+
+                swipeneticTileService.showDialog(
+                    SwipeTagsDialog.create(swipeneticTileService, Swipe(Date(), Swipe.Type.OUT))
+                )
             }
 
-            tile.updateTile(newState, newLabel)
+            swipeneticTileService.qsTile.updateTile(newState, newLabel)
         }
     }
 
@@ -145,7 +151,7 @@ class LiveTimeUpdateService : Service() {
             }
 
             // Updating tile
-            tile.updateTile(newState, newLabel)
+            swipeneticTileService.qsTile.updateTile(newState, newLabel)
         }
     }
 
@@ -175,7 +181,7 @@ class LiveTimeUpdateService : Service() {
             repeater.cancel()
             repeater.startExecute {
                 val toHHMM = DateUtils2.toHHmmss(totalInSwipeInMs)
-                tile.updateTile(Tile.STATE_ACTIVE, toHHMM)
+                swipeneticTileService.qsTile.updateTile(Tile.STATE_ACTIVE, toHHMM)
                 info("Time update : $toHHMM: TaskID : ${repeater.toString().split("@").last()}")
                 totalInSwipeInMs += 1000
             }

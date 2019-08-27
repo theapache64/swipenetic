@@ -17,9 +17,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.DialogActivity" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="tvFromToSyle">
         <item name="android:textColor">@color/grey_800</item>
         <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="SwipeSessionTag">
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/grey_900</item>
+        <item name="android:background">@drawable/tag</item>
     </style>
 
 </resources>

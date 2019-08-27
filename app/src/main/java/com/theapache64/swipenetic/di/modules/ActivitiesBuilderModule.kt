@@ -19,4 +19,5 @@ abstract class ActivitiesBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun getMainActivity(): MainActivity
+
 }

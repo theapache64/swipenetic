@@ -1,6 +1,10 @@
 package com.theapache64.swipenetic.services
 
+
 import android.service.quicksettings.TileService
+import com.theapache64.swipenetic.data.local.entities.Swipe
+import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
+import java.util.*
 
 
 class SwipeneticTileService : TileService() {
@@ -11,8 +15,7 @@ class SwipeneticTileService : TileService() {
         startService(
             LiveTimeUpdateService.getStartIntent(
                 this,
-                LiveTimeUpdateService.ACTION_CLICK,
-                qsTile
+                LiveTimeUpdateService.ACTION_CLICK
             )
         )
     }
@@ -23,9 +26,10 @@ class SwipeneticTileService : TileService() {
         startService(
             LiveTimeUpdateService.getStartIntent(
                 this,
-                LiveTimeUpdateService.ACTION_LISTEN,
-                qsTile
+                LiveTimeUpdateService.ACTION_LISTEN
             )
         )
+
+
     }
 }

@@ -28,6 +28,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="IN" />
 
+            <!--Tag-->
+            <TextView
+                style="@style/SwipeSessionTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{swipeSession.tag.label}"
+                android:visibility="@{swipeSession.tag==null ? View.GONE : View.VISIBLE}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Table Tennis" />
+
             <!--Duration-->
             <TextView
                 android:id="@+id/tv_swipe_duration"
@@ -103,5 +114,7 @@
         <variable
             name="swipeSession"
             type="com.theapache64.swipenetic.models.SwipeSession" />
+
+        <import type="android.view.View" />
     </data>
 </layout>

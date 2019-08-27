@@ -14,12 +14,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.theapache64.swipenetic.R
+import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
+import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
@@ -62,7 +62,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         }
 
         // Watching for swipe sessions
-        viewModel.getSwipeSessions().observe(this, androidx.lifecycle.Observer {
+        viewModel.getSwipeSessions().observe(this, Observer {
 
             val rvSwipeSessions = binding.iContentMain.rvSwipeSessions
 
@@ -93,16 +93,9 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             viewModel.loadSwipeSessions()
         })
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-
     }
 
     private val swipeUpdateRepeater = Repeater(1000)
-
 
     private fun startUpdatingFirstItem(
         sessionsAdapter: SwipeSessionsAdapter,
