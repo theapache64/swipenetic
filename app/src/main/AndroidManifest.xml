@@ -16,7 +16,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-
+        <activity android:name=".ui.activities.summary.SummaryActivity"></activity>
 
         <service
             android:name=".services.LiveTimeUpdateService"

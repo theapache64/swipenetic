@@ -1,4 +1,5 @@
 package com.theapache64.swipenetic.di.modules
+import com.theapache64.swipenetic.ui.activities.summary.SummaryViewModel
 
 import androidx.lifecycle.ViewModel
 import com.theapache64.swipenetic.ui.activities.main.MainViewModel
@@ -24,5 +25,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     abstract fun bindMainViewModel(viewModel: MainViewModel): ViewModel
+
+@Binds
+@IntoMap
+@ViewModelKey(SummaryViewModel::class)
+abstract fun bindSummaryViewModel(viewModel: SummaryViewModel): ViewModel
 
 }
