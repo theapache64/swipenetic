@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.theapache64.swipenetic.data.local.entities.Swipe
 
 @Dao
@@ -23,4 +24,7 @@ interface SwipeDao {
 
     @Query("SELECT COUNT(id) FROM swipes WHERE strftime('%Y-%m-%d', timestamp / 1000, 'unixepoch') = date('now')")
     fun getTotalRows(): LiveData<Int>
+
+    @Update
+    fun updateSwipe(swipe: Swipe)
 }

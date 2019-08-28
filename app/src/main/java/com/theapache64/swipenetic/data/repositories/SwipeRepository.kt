@@ -19,7 +19,7 @@ class SwipeRepository @Inject constructor(
 
     fun insertSwipe(type: Swipe.Type) {
         appExecutors.diskIO().execute {
-            swipeDao.insert(Swipe(Calendar.getInstance().time, type))
+            swipeDao.insert(Swipe(Calendar.getInstance().time, type, null))
         }
     }
 
@@ -50,7 +50,7 @@ class SwipeRepository @Inject constructor(
      */
     private fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
         when {
-            swipes.isEmpty() -> throw IllegalArgumentException("No swipe data found")
+            swipes.isEmpty() -> return 0
             swipes.size == 1 -> return (System.currentTimeMillis() - swipes.first().timestamp.time)
             else -> {
 
@@ -129,7 +129,7 @@ class SwipeRepository @Inject constructor(
                         SwipeSession(
                             Swipe.Type.OUT,
                             inSwipeTwo.timestamp.time - outSwipe.timestamp.time,
-                            null,
+                            outSwipe.tag,
                             DateUtils2.tohmma(outSwipe.timestamp),
                             DateUtils2.tohmma(inSwipeTwo.timestamp)
                         )
@@ -141,7 +141,7 @@ class SwipeRepository @Inject constructor(
                         SwipeSession(
                             Swipe.Type.OUT,
                             currentTime.time - outSwipe.timestamp.time,
-                            null,
+                            outSwipe.tag,
                             DateUtils2.tohmma(outSwipe.timestamp),
                             DateUtils2.tohmma(currentTime)
                         )
@@ -170,6 +170,12 @@ class SwipeRepository @Inject constructor(
 
     fun getAllIds(): LiveData<Int> {
         return swipeDao.getTotalRows()
+    }
+
+    fun update(lastSwipe: Swipe) {
+        appExecutors.diskIO().execute {
+            swipeDao.updateSwipe(lastSwipe)
+        }
     }
 
 

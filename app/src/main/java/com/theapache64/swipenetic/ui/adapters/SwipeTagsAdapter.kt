@@ -9,7 +9,7 @@ import com.theapache64.swipenetic.models.SwipeTag
 
 class SwipeTagsAdapter(
     context: Context,
-    private val callback: (position: Int) -> Unit
+    private val callback: (swipeTag: SwipeTag) -> Unit
 ) : RecyclerView.Adapter<SwipeTagsAdapter.ViewHolder>() {
 
     private val swipeTags = SwipeTag.values()
@@ -31,7 +31,7 @@ class SwipeTagsAdapter(
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.root.setOnClickListener {
-                callback(layoutPosition)
+                callback(swipeTags[layoutPosition])
             }
         }
     }

@@ -5,8 +5,9 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
-import com.theapache64.swipenetic.data.local.typeconverters.DateConvertor
-import com.theapache64.swipenetic.data.local.typeconverters.SwipeTypeConvertor
+import com.theapache64.swipenetic.data.local.typeconverters.DateConverter
+import com.theapache64.swipenetic.data.local.typeconverters.SwipeTagConverter
+import com.theapache64.swipenetic.data.local.typeconverters.SwipeTypeConverter
 
 @Database(
     entities = [Swipe::class],
@@ -14,8 +15,9 @@ import com.theapache64.swipenetic.data.local.typeconverters.SwipeTypeConvertor
     exportSchema = false
 )
 @TypeConverters(
-    DateConvertor::class,
-    SwipeTypeConvertor::class
+    DateConverter::class,
+    SwipeTypeConverter::class,
+    SwipeTagConverter::class
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun swipeDao(): SwipeDao

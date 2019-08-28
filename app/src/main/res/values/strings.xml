@@ -12,4 +12,5 @@
     <string name="channel_time_desc">Live tile timer</string>
     <string name="notif_title_live_timer">Live Timer</string>
     <string name="notif_content_live_timer">Live timer running in background</string>
+    <string name="label_total_swipe_time">Total Swipe</string>
 </resources>

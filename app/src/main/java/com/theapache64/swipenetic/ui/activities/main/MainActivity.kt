@@ -15,11 +15,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
-import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
-import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
@@ -68,7 +66,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
 
             when (it.status) {
                 Resource.Status.LOADING -> {
-                    rvSwipeSessions.visibility = View.GONE
+                    binding.iContentMain.gContentMain.visibility = View.GONE
                     lvSwipeSessions.showLoading(R.string.loading_swipe_sessions)
                 }
                 Resource.Status.SUCCESS -> {
@@ -78,10 +76,11 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
 
                     }
                     startUpdatingFirstItem(sessionsAdapter, sessions)
-                    rvSwipeSessions.visibility = View.VISIBLE
+                    binding.iContentMain.gContentMain.visibility = View.VISIBLE
                     rvSwipeSessions.adapter = sessionsAdapter
                 }
                 Resource.Status.ERROR -> {
+                    binding.iContentMain.gContentMain.visibility = View.GONE
                     lvSwipeSessions.showError(it.message!!)
                 }
             }
@@ -91,8 +90,8 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         viewModel.getSwipeChange().observe(this, Observer { ids ->
             // Data changed
             viewModel.loadSwipeSessions()
+            viewModel.checkAndStartTotalInSwipeCounting()
         })
-
     }
 
     private val swipeUpdateRepeater = Repeater(1000)

@@ -1,5 +1,6 @@
 package com.theapache64.swipenetic.services
 
+import android.app.Dialog
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -11,12 +12,12 @@ import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.swipenetic.exts.updateTile
+import com.theapache64.swipenetic.models.SwipeTag
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
-import java.util.*
 import javax.inject.Inject
 
 class LiveTimeUpdateService : Service() {
@@ -51,6 +52,15 @@ class LiveTimeUpdateService : Service() {
     override fun onCreate() {
         super.onCreate()
         AndroidInjection.inject(this)
+
+        val not = NotificationCompat.Builder(this, App.CHANNEL_TIMER_ID)
+            .setSmallIcon(R.drawable.ic_clock)
+            .setContentTitle(getString(R.string.notif_title_live_timer))
+            .setContentText(getString(R.string.notif_content_live_timer))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .build()
+
+        startForeground(1324, not)
     }
 
 
@@ -119,7 +129,18 @@ class LiveTimeUpdateService : Service() {
                 stopInTimeUpdate()
 
                 swipeneticTileService.showDialog(
-                    SwipeTagsDialog.create(swipeneticTileService, Swipe(Date(), Swipe.Type.OUT))
+                    SwipeTagsDialog.create(
+                        swipeneticTileService,
+                        object : SwipeTagsDialog.Callback {
+                            override fun onSwipeTagSelected(swipeTag: SwipeTag, dialog: Dialog) {
+                                swipeRepository.getLastSwipeToday { lastSwipe ->
+                                    lastSwipe!!.tag = swipeTag
+                                    swipeRepository.update(lastSwipe)
+                                    dialog.dismiss()
+                                }
+                            }
+                        })
+
                 )
             }
 
@@ -144,10 +165,13 @@ class LiveTimeUpdateService : Service() {
                 newState = Tile.STATE_ACTIVE
 
                 info("State updated to active, starting timer...")
+                startInTimeUpdate()
             } else {
                 newLabel = getString(R.string.tile_label_out)
                 newState = Tile.STATE_INACTIVE
                 info("State updated to inactive, stopping timer...")
+                stopInTimeUpdate()
+
             }
 
             // Updating tile
@@ -158,21 +182,11 @@ class LiveTimeUpdateService : Service() {
     private fun stopInTimeUpdate() {
         info("Timer stopped")
         repeater.cancel()
-        stopSelf()
     }
 
     private fun startInTimeUpdate() {
 
         info("Timer started")
-
-        val not = NotificationCompat.Builder(this, App.CHANNEL_TIMER_ID)
-            .setSmallIcon(R.drawable.ic_clock)
-            .setContentTitle(getString(R.string.notif_title_live_timer))
-            .setContentText(getString(R.string.notif_content_live_timer))
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .build()
-
-        startForeground(1324, not)
 
 
         // Update total in time in each second

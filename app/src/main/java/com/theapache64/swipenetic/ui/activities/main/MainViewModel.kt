@@ -1,11 +1,15 @@
 package com.theapache64.swipenetic.ui.activities.main
 
 
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
+import com.theapache64.swipenetic.utils.DateUtils2
+import com.theapache64.swipenetic.utils.Repeater
 import java.util.*
 import javax.inject.Inject
 
@@ -16,6 +20,39 @@ class MainViewModel @Inject constructor(
     val currentDate = MutableLiveData<Calendar>()
     private val swipeSessions = Transformations.switchMap(currentDate) { date ->
         swipeRepository.getSwipeSessions(date)
+    }
+
+    val totalInSwipe = ObservableField("00:00:00")
+
+
+    private val swipeTimeRepeater = Repeater(1000)
+
+    fun checkAndStartTotalInSwipeCounting() {
+
+        swipeRepository.getInSwipesTodayInMillis { _inSwipeInMillis ->
+            var inSwipeInMillis = _inSwipeInMillis
+            var totalInTime = DateUtils2.toHHmmss(inSwipeInMillis)
+            totalInSwipe.set(totalInTime)
+
+            // checking if the user is in or not
+            swipeRepository.getLastSwipeToday { lastSwipe ->
+                if (lastSwipe != null && lastSwipe.type == Swipe.Type.IN) {
+                    // user is in, so start count down
+                    swipeTimeRepeater.cancel()
+                    swipeTimeRepeater.startExecute {
+                        inSwipeInMillis += 1000
+                        totalInTime = DateUtils2.toHHmmss(inSwipeInMillis)
+                        totalInSwipe.set(totalInTime)
+                    }
+                } else {
+                    swipeTimeRepeater.cancel()
+                }
+            }
+
+
+        }
+
+
     }
 
     /**

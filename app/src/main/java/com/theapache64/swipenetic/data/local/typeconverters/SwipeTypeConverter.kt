@@ -3,7 +3,7 @@ package com.theapache64.swipenetic.data.local.typeconverters
 import androidx.room.TypeConverter
 import com.theapache64.swipenetic.data.local.entities.Swipe
 
-class SwipeTypeConvertor {
+class SwipeTypeConverter {
 
     @TypeConverter
     fun fromSwipeType(swipeType: Swipe.Type): String {
