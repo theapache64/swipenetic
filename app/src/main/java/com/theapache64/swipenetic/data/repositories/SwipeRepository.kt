@@ -116,7 +116,9 @@ class SwipeRepository @Inject constructor(
                         outSwipe.timestamp.time - inSwipe.timestamp.time,
                         null,
                         DateUtils2.tohmma(inSwipe.timestamp),
-                        DateUtils2.tohmma(outSwipe.timestamp)
+                        DateUtils2.tohmma(outSwipe.timestamp),
+                        inSwipe,
+                        outSwipe
                     )
                 )
 
@@ -131,7 +133,9 @@ class SwipeRepository @Inject constructor(
                             inSwipeTwo.timestamp.time - outSwipe.timestamp.time,
                             outSwipe.tag,
                             DateUtils2.tohmma(outSwipe.timestamp),
-                            DateUtils2.tohmma(inSwipeTwo.timestamp)
+                            DateUtils2.tohmma(inSwipeTwo.timestamp),
+                            outSwipe,
+                            inSwipeTwo
                         )
                     )
                 } else {
@@ -143,7 +147,9 @@ class SwipeRepository @Inject constructor(
                             currentTime.time - outSwipe.timestamp.time,
                             outSwipe.tag,
                             DateUtils2.tohmma(outSwipe.timestamp),
-                            DateUtils2.tohmma(currentTime)
+                            DateUtils2.tohmma(currentTime),
+                            outSwipe,
+                            null
                         )
                     )
                 }
@@ -158,7 +164,9 @@ class SwipeRepository @Inject constructor(
                         now.time - inSwipe.timestamp.time,
                         null,
                         DateUtils2.tohmma(inSwipe.timestamp),
-                        DateUtils2.tohmma(now)
+                        DateUtils2.tohmma(now),
+                        inSwipe,
+                        null
                     )
                 )
             }

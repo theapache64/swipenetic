@@ -8,7 +8,9 @@ data class SwipeSession(
     var duration: Long,
     val tag: SwipeTag?,
     val timeFrom: String,
-    var timeTo: String
+    var timeTo: String,
+    val startSwipe: Swipe,
+    val endSwipe: Swipe?
 ) {
     var durationString = DateUtils2.getDuration(duration)
 

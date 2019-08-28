@@ -2,6 +2,7 @@ package com.theapache64.swipenetic.ui.activities.main
 
 
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,9 +16,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
+import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.swipenetic.models.SwipeSession
+import com.theapache64.swipenetic.models.SwipeTag
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
+import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
@@ -32,6 +36,7 @@ import javax.inject.Inject
 class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDateSetListener {
 
 
+    private lateinit var sessionsAdapter: SwipeSessionsAdapter
     @Inject
     lateinit var factory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
@@ -72,8 +77,12 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                 Resource.Status.SUCCESS -> {
                     lvSwipeSessions.hideLoading()
                     val sessions = it.data!!
-                    val sessionsAdapter = SwipeSessionsAdapter(this, sessions) {
-
+                    this.sessionsAdapter = SwipeSessionsAdapter(this, sessions) { position ->
+                        info("Clicked")
+                        val session = sessions[position]
+                        if (session.type == Swipe.Type.OUT) {
+                            setSwipeTag(position, session.startSwipe)
+                        }
                     }
                     startUpdatingFirstItem(sessionsAdapter, sessions)
                     binding.iContentMain.gContentMain.visibility = View.VISIBLE
@@ -92,6 +101,17 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             viewModel.loadSwipeSessions()
             viewModel.checkAndStartTotalInSwipeCounting()
         })
+    }
+
+    private fun setSwipeTag(position: Int, swipe: Swipe) {
+        SwipeTagsDialog.create(this, object : SwipeTagsDialog.Callback {
+            override fun onSwipeTagSelected(swipeTag: SwipeTag, dialog: Dialog) {
+                swipe.tag = swipeTag
+                viewModel.updateSwipe(swipe)
+                dialog.dismiss()
+                sessionsAdapter.notifyItemChanged(position)
+            }
+        }).show()
     }
 
     private val swipeUpdateRepeater = Repeater(1000)

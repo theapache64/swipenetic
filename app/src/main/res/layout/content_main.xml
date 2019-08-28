@@ -90,8 +90,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_swipe_sessions"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/cv_total_in_time"
                 app:layout_constraintStart_toStartOf="@id/cv_total_in_time"
                 app:layout_constraintTop_toBottomOf="@id/cv_total_in_time" />

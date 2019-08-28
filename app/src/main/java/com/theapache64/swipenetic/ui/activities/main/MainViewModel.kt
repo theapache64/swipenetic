@@ -74,4 +74,8 @@ class MainViewModel @Inject constructor(
     fun getSwipeChange(): LiveData<Int> {
         return swipeRepository.getAllIds()
     }
+
+    fun updateSwipe(swipe: Swipe) {
+        swipeRepository.update(swipe)
+    }
 }
