@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:id="@+id/tv_lable_in_time"
+                        android:id="@+id/tv_label_in_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -78,9 +78,9 @@
                         android:padding="8dp"
                         android:text="@{viewModel.totalInSwipe}"
                         android:textSize="20sp"
-                        app:layout_constraintEnd_toEndOf="@id/tv_lable_in_time"
-                        app:layout_constraintStart_toStartOf="@id/tv_lable_in_time"
-                        app:layout_constraintTop_toBottomOf="@id/tv_lable_in_time"
+                        app:layout_constraintEnd_toEndOf="@id/tv_label_in_time"
+                        app:layout_constraintStart_toStartOf="@id/tv_label_in_time"
+                        app:layout_constraintTop_toBottomOf="@id/tv_label_in_time"
                         tools:text="@tools:sample/lorem" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
