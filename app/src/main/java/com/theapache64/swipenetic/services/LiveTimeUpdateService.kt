@@ -88,7 +88,6 @@ class LiveTimeUpdateService : Service() {
 
     private fun handleClick() {
 
-
         swipeRepository.getLastSwipeToday { lastSwipe ->
 
             val tileState = swipeneticTileService.qsTile.state
