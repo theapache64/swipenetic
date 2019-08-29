@@ -13,13 +13,12 @@ import java.util.*
 data class Swipe(
     @ColumnInfo(name = "timestamp") val timestamp: Date,
     @ColumnInfo(name = "type") val type: Type,
-    @ColumnInfo(name = "tag") var tag: SwipeTag?
+    @ColumnInfo(name = "tag") var tag: SwipeTag = SwipeTag.OTHER
 ) : Serializable {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     var id: Int = 0
-
 
     enum class Type {
         IN, OUT

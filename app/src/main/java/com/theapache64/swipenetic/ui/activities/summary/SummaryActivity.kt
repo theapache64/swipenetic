@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivitySummaryBinding
+import com.theapache64.swipenetic.ui.adapters.SwipeSummaryAdapter
+import com.theapache64.twinkill.logger.info
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
@@ -35,13 +37,23 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
         super.onCreate(savedInstanceState)
 
         binding = bindContentView(R.layout.activity_summary)
+        setSupportActionBar(binding.toolbar)
         viewModel = ViewModelProviders.of(this, factory).get(SummaryViewModel::class.java)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         binding.handler = this
         binding.viewModel = viewModel
 
-        viewModel.getSwipeSummary().obsever(this, Observer {
+        viewModel.getSwipeSummary().observe(this, Observer {
 
+            info("Swipe summary loaded : $it")
+            val adapter = SwipeSummaryAdapter(this, it) { position ->
+                info("Clicked on $position")
+            }
+
+            binding.rvSwipeSummary.adapter = adapter
         })
+
+        viewModel.loadSwipeSummary()
     }
 }

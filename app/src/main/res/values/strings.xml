@@ -13,4 +13,9 @@
     <string name="notif_title_live_timer">Swipenetic Engine</string>
     <string name="notif_content_live_timer">Ready to serve</string>
     <string name="label_total_swipe_time">Total Swipe</string>
+    <string name="label_time_spent">Time Spent</string>
+    <string name="action_show_summary">Show Summary</string>
+    <string name="label_summary">Summary</string>
+    <string name="label_total_in_time">In Swipe</string>
+    <string name="label_total_out_time">Out Swipe</string>
 </resources>

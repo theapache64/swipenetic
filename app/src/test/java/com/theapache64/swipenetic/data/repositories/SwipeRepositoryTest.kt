@@ -1,7 +1,7 @@
 package com.theapache64.swipenetic.data.repositories
 
 import com.theapache64.swipenetic.data.local.entities.Swipe
-import com.theapache64.swipenetic.models.SwipeSession
+import com.theapache64.swipenetic.models.SwipeTag
 import org.junit.Test
 import java.util.*
 
@@ -11,85 +11,49 @@ class SwipeRepositoryTest {
     fun test() {
         val swipes = listOf(
             Swipe(Date(1000), Swipe.Type.IN),
-            Swipe(Date(2000), Swipe.Type.OUT),
-
+            Swipe(Date(2000), Swipe.Type.OUT, SwipeTag.TT),
             Swipe(Date(3000), Swipe.Type.IN),
-            Swipe(Date(4000), Swipe.Type.OUT),
-
+            Swipe(Date(4000), Swipe.Type.OUT, SwipeTag.COFFEE),
             Swipe(Date(5000), Swipe.Type.IN)
 
         )
 
-        val swipeSessions = mutableListOf<SwipeSession>()
+        val map = mutableMapOf<SwipeTag, Long>()
 
         for (i in 0 until swipes.size step 2) {
-            val inSwipe = swipes[i]
-            val outSwipeIndex = i + 1
 
+            val outSwipeIndex = i + 1
             if (outSwipeIndex < swipes.size) {
 
                 val outSwipe = swipes[outSwipeIndex]
 
-                // In Swipe
-                swipeSessions.add(
-                    SwipeSession(
-                        Swipe.Type.IN,
-                        "${outSwipe.timestamp.time - inSwipe.timestamp.time}",
-                        null,
-                        "${inSwipe.timestamp.time}",
-                        "${outSwipe.timestamp.time}"
-                    )
-                )
-
-                val inSwipeTwoIndex = i + 2
-                if (inSwipeTwoIndex < swipes.size) {
-
-                    val inSwipeTwo = swipes[inSwipeTwoIndex]
-
-                    // Out swipe
-                    swipeSessions.add(
-                        SwipeSession(
-                            Swipe.Type.OUT,
-                            "${inSwipeTwo.timestamp.time - outSwipe.timestamp.time}",
-                            null,
-                            "${outSwipe.timestamp.time}",
-                            "${inSwipeTwo.timestamp.time}"
-                        )
-                    )
-                } else {
-                    // Start out swipe session
-                    val currentTime = 9000
-                    swipeSessions.add(
-                        SwipeSession(
-                            Swipe.Type.OUT,
-                            "S - ${currentTime - outSwipe.timestamp.time}",
-                            null,
-                            "${outSwipe.timestamp.time}",
-                            "$currentTime"
-                        )
-                    )
+                if (outSwipe.type != Swipe.Type.OUT) {
+                    throw IllegalArgumentException("Invalid swipe out data")
                 }
 
+                val inSwipe2Index = i + 2
+                if (inSwipe2Index < swipes.size) {
+                    // next in is available
+                    val inSwipe2 = swipes[inSwipe2Index]
+                    val diff = inSwipe2.timestamp.time - outSwipe.timestamp.time
+                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                        diff
+                    } else {
+                        map[outSwipe.tag]!! + diff
+                    }
+                } else {
 
-            } else {
-                // in swipe with current time
-                val currentTime = 9000
-                swipeSessions.add(
-                    SwipeSession(
-                        Swipe.Type.IN,
-                        "${currentTime - inSwipe.timestamp.time}",
-                        null,
-                        "${inSwipe.timestamp.time}",
-                        "$currentTime"
-                    )
-                )
+                    // currently out
+                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                        Date().time
+                    } else {
+                        map[outSwipe.tag]!! + Date().time
+                    }
+                }
             }
         }
 
-        for (swipeSession in swipeSessions) {
-            println(swipeSession)
-        }
 
-
+        println("Total swipe is $map")
     }
 }

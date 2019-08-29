@@ -20,6 +20,7 @@ import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.ui.activities.summary.SummaryActivity
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
@@ -150,6 +151,11 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+
+            R.id.action_show_summary -> {
+                startActivity(SummaryActivity.getStartIntent(this))
+            }
+
             R.id.action_change_date -> {
                 showChangeDateCalendar()
             }

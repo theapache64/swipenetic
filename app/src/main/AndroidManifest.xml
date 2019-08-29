@@ -16,7 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.activities.summary.SummaryActivity"></activity>
+        <activity
+            android:name=".ui.activities.summary.SummaryActivity"
+            android:label="@string/label_summary"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <service
             android:name=".services.LiveTimeUpdateService"

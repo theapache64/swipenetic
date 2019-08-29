@@ -2,9 +2,12 @@ package com.theapache64.swipenetic.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.models.SwipeSession
+import com.theapache64.swipenetic.models.SwipeSummary
+import com.theapache64.swipenetic.models.SwipeTag
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.twinkill.utils.AppExecutors
 import com.theapache64.twinkill.utils.DateUtils
@@ -19,7 +22,7 @@ class SwipeRepository @Inject constructor(
 
     fun insertSwipe(type: Swipe.Type) {
         appExecutors.diskIO().execute {
-            swipeDao.insert(Swipe(Calendar.getInstance().time, type, null))
+            swipeDao.insert(Swipe(Calendar.getInstance().time, type))
         }
     }
 
@@ -48,7 +51,7 @@ class SwipeRepository @Inject constructor(
     /**
      * To get in time in milliseconds from swipe list
      */
-    private fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
+    fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
         when {
             swipes.isEmpty() -> return 0
             swipes.size == 1 -> return (System.currentTimeMillis() - swipes.first().timestamp.time)
@@ -184,6 +187,87 @@ class SwipeRepository @Inject constructor(
         appExecutors.diskIO().execute {
             swipeDao.updateSwipe(lastSwipe)
         }
+    }
+
+    fun getSwipesToday(callback: (List<Swipe>) -> Unit) {
+        appExecutors.diskIO().execute {
+            val swipes = swipeDao.getSwipesToday()
+            appExecutors.mainThread().execute {
+                callback(swipes)
+            }
+        }
+    }
+
+    fun getSwipeSummaryToday(callback: (List<SwipeSummary>) -> Unit) {
+
+        val swipeSummary = mutableListOf<SwipeSummary>()
+
+        appExecutors.diskIO().execute {
+
+            val todaySwipes = swipeDao.getSwipesToday()
+
+
+            // Calculating total time spent in office
+            if (todaySwipes.isNotEmpty()) {
+
+                // Calculating time spent
+                val firstIn = todaySwipes.first().timestamp
+                val lastOut =
+                    if (todaySwipes.size == 1 || todaySwipes.last().type == Swipe.Type.IN) {
+                        Date()
+                    } else {
+                        todaySwipes.last().timestamp
+                    }
+
+                val totalSwipeInMs = lastOut.time - firstIn.time
+
+                // Adding time spent
+                swipeSummary.add(
+                    SwipeSummary(
+                        R.drawable.ic_clock,
+                        R.string.label_time_spent,
+                        DateUtils2.getDuration(totalSwipeInMs)
+                    )
+                )
+
+                val inSwipeInMs = getTotalInSwipesInMillis(todaySwipes)
+
+                // Adding in swipe
+                swipeSummary.add(
+                    SwipeSummary(
+                        R.drawable.ic_clock,
+                        R.string.label_total_in_time,
+                        DateUtils2.getDuration(inSwipeInMs)
+                    )
+                )
+
+                // Calculating out swipe
+                val totalOutSwipeInMs = totalSwipeInMs - inSwipeInMs
+
+                // Adding out swipe
+                swipeSummary.add(
+                    SwipeSummary(
+                        R.drawable.ic_clock,
+                        R.string.label_total_out_time,
+                        DateUtils2.getDuration(totalOutSwipeInMs)
+                    )
+                )
+
+                val ttTimeInMs = getTotalOutTimeSpent(todaySwipes)
+
+                appExecutors.mainThread().execute {
+                    callback(swipeSummary)
+                }
+            }
+
+
+        }
+
+    }
+
+    private fun getTotalOutTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
+        val map = mutableMapOf<SwipeTag, Long>()
+        return map
     }
 
 
