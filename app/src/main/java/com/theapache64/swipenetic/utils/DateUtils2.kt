@@ -53,7 +53,8 @@ object DateUtils2 {
                 val minute = (seconds % 3600) / 60
                 "$hour hrs $minute min"
             }
-            else -> "NONE"
+
+            else -> "NONE: $seconds"
         }
     }
 }

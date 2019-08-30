@@ -18,4 +18,5 @@
     <string name="label_summary">Summary</string>
     <string name="label_total_in_time">In Swipe</string>
     <string name="label_total_out_time">Out Swipe</string>
+    <string name="label_time_spent_coffee">Spent for coffee</string>
 </resources>

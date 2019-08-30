@@ -153,7 +153,12 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         when (item.itemId) {
 
             R.id.action_show_summary -> {
-                startActivity(SummaryActivity.getStartIntent(this))
+                startActivity(
+                    SummaryActivity.getStartIntent(
+                        this,
+                        viewModel.getCurrentDate()
+                    )
+                )
             }
 
             R.id.action_change_date -> {

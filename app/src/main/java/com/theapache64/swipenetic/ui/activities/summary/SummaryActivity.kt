@@ -13,14 +13,17 @@ import com.theapache64.twinkill.logger.info
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
 class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
 
     companion object {
-        fun getStartIntent(context: Context): Intent {
+        private const val KEY_DATE = "date"
+        fun getStartIntent(context: Context, date: Date): Intent {
             return Intent(context, SummaryActivity::class.java).apply {
                 // data goes here
+                putExtra(KEY_DATE, date)
             }
         }
     }
@@ -54,6 +57,7 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
             binding.rvSwipeSummary.adapter = adapter
         })
 
-        viewModel.loadSwipeSummary()
+        val date = intent.getSerializableExtra(KEY_DATE) as Date
+        viewModel.loadSwipeSummary(date)
     }
 }

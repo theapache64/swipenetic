@@ -198,13 +198,14 @@ class SwipeRepository @Inject constructor(
         }
     }
 
-    fun getSwipeSummaryToday(callback: (List<SwipeSummary>) -> Unit) {
+    fun getSwipeSummary(date: Date, callback: (List<SwipeSummary>) -> Unit) {
 
         val swipeSummary = mutableListOf<SwipeSummary>()
 
         appExecutors.diskIO().execute {
 
-            val todaySwipes = swipeDao.getSwipesToday()
+            val dateFormatted = DateUtils.toDDMMYYY(date)
+            val todaySwipes = swipeDao.getSwipes(dateFormatted)
 
 
             // Calculating total time spent in office
@@ -225,7 +226,7 @@ class SwipeRepository @Inject constructor(
                 swipeSummary.add(
                     SwipeSummary(
                         R.drawable.ic_clock,
-                        R.string.label_time_spent,
+                        "Total time spent",
                         DateUtils2.getDuration(totalSwipeInMs)
                     )
                 )
@@ -236,7 +237,7 @@ class SwipeRepository @Inject constructor(
                 swipeSummary.add(
                     SwipeSummary(
                         R.drawable.ic_clock,
-                        R.string.label_total_in_time,
+                        "Total in time",
                         DateUtils2.getDuration(inSwipeInMs)
                     )
                 )
@@ -248,27 +249,73 @@ class SwipeRepository @Inject constructor(
                 swipeSummary.add(
                     SwipeSummary(
                         R.drawable.ic_clock,
-                        R.string.label_total_out_time,
+                        "Total out time",
                         DateUtils2.getDuration(totalOutSwipeInMs)
                     )
                 )
 
-                val ttTimeInMs = getTotalOutTimeSpent(todaySwipes)
+                val tagsAndTimes = getSwipeTagWithTotalTimeSpent(todaySwipes)
+                for (tagAndTime in tagsAndTimes) {
+
+                    swipeSummary.add(
+                        SwipeSummary(
+                            tagAndTime.key.image,
+                            tagAndTime.key.label,
+                            DateUtils2.getDuration(tagAndTime.value)
+                        )
+                    )
+                }
 
                 appExecutors.mainThread().execute {
                     callback(swipeSummary)
                 }
             }
 
-
         }
 
+
     }
 
-    private fun getTotalOutTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
+
+    private fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
+
         val map = mutableMapOf<SwipeTag, Long>()
+
+        for (i in 0 until swipes.size step 2) {
+
+            val outSwipeIndex = i + 1
+            if (outSwipeIndex < swipes.size) {
+
+                val outSwipe = swipes[outSwipeIndex]
+
+                if (outSwipe.type != Swipe.Type.OUT) {
+                    throw IllegalArgumentException("Invalid swipe out data")
+                }
+
+                val inSwipe2Index = i + 2
+                if (inSwipe2Index < swipes.size) {
+                    // next in is available
+                    val inSwipe2 = swipes[inSwipe2Index]
+                    val diff = inSwipe2.timestamp.time - outSwipe.timestamp.time
+                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                        diff
+                    } else {
+                        map[outSwipe.tag]!! + diff
+                    }
+                } else {
+
+                    // currently out
+                    val diff = Date().time - outSwipe.timestamp.time
+                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                        diff
+                    } else {
+                        map[outSwipe.tag]!! + diff
+                    }
+                }
+            }
+        }
+
         return map
     }
-
 
 }

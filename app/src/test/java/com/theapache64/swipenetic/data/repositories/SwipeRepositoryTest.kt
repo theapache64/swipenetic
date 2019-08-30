@@ -11,8 +11,8 @@ class SwipeRepositoryTest {
     fun test() {
         val swipes = listOf(
             Swipe(Date(1000), Swipe.Type.IN),
-            Swipe(Date(2000), Swipe.Type.OUT, SwipeTag.TT),
-            Swipe(Date(3000), Swipe.Type.IN),
+            Swipe(Date(2000), Swipe.Type.OUT),
+            Swipe(Date(4000), Swipe.Type.IN),
             Swipe(Date(4000), Swipe.Type.OUT, SwipeTag.COFFEE),
             Swipe(Date(5000), Swipe.Type.IN)
 

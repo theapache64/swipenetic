@@ -78,4 +78,8 @@ class MainViewModel @Inject constructor(
     fun updateSwipe(swipe: Swipe) {
         swipeRepository.update(swipe)
     }
+
+    fun getCurrentDate(): Date {
+        return currentDate.value?.time ?: Calendar.getInstance().time
+    }
 }

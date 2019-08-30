@@ -19,10 +19,10 @@ class SummaryViewModel @Inject constructor(
     private val swipeSummary = MutableLiveData<List<SwipeSummary>>()
     fun getSwipeSummary(): LiveData<List<SwipeSummary>> = swipeSummary
 
-    fun loadSwipeSummary() {
+    fun loadSwipeSummary(date: Date) {
 
         // finally
-        swipeRepository.getSwipeSummaryToday{ summary ->
+        swipeRepository.getSwipeSummary(date){ summary ->
             this.swipeSummary.value = summary
         }
 
