@@ -3,11 +3,14 @@ package com.theapache64.swipenetic.ui.activities.summary
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivitySummaryBinding
+import com.theapache64.swipenetic.ui.activities.chart.ChartActivity
 import com.theapache64.swipenetic.ui.adapters.SwipeSummaryAdapter
 import com.theapache64.twinkill.logger.info
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
@@ -59,5 +62,22 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
 
         val date = intent.getSerializableExtra(KEY_DATE) as Date
         viewModel.loadSwipeSummary(date)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_summary, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_show_chart -> {
+                startActivity(ChartActivity.getStartIntent(this))
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+
+        return true
+
     }
 }
