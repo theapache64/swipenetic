@@ -36,14 +36,19 @@ class SwipeRepository @Inject constructor(
         }
     }
 
-    fun getInSwipesTodayInMillis(onInSwipesToday: (Long) -> Unit) {
+    fun getInSwipesTodayInMillis(callback: (Long) -> Unit) {
+        getInSwipesInMillis(Date(), callback)
+    }
+
+    fun getInSwipesInMillis(date: Date, callback: (Long) -> Unit) {
         appExecutors.diskIO().execute {
 
-            val swipesToday = swipeDao.getSwipesToday()
+            val dateFormatted = DateUtils.toDDMMYYY(date)
+            val swipesToday = swipeDao.getSwipes(dateFormatted)
             val inSwipesInMillis = getTotalInSwipesInMillis(swipesToday)
 
             appExecutors.mainThread().execute {
-                onInSwipesToday(inSwipesInMillis)
+                callback(inSwipesInMillis)
             }
         }
     }
@@ -80,13 +85,13 @@ class SwipeRepository @Inject constructor(
     }
 
 
-    fun getSwipeSessions(date: Calendar): LiveData<Resource<List<SwipeSession>>> {
+    fun getSwipeSessions(date: Date): LiveData<Resource<List<SwipeSession>>> {
         val swipeSessions = MutableLiveData<Resource<List<SwipeSession>>>()
 
         // loading
         swipeSessions.value = Resource.loading()
         appExecutors.diskIO().execute {
-            val ddmmYYYYdate = DateUtils.toDDMMYYY(date.time)
+            val ddmmYYYYdate = DateUtils.toDDMMYYY(date)
             val swipes = swipeDao.getSwipes(ddmmYYYYdate)
             val sessions = getSwipeSessionsFromSwipes(swipes)
             if (sessions.isNotEmpty()) {
@@ -189,14 +194,6 @@ class SwipeRepository @Inject constructor(
         }
     }
 
-    fun getSwipesToday(callback: (List<Swipe>) -> Unit) {
-        appExecutors.diskIO().execute {
-            val swipes = swipeDao.getSwipesToday()
-            appExecutors.mainThread().execute {
-                callback(swipes)
-            }
-        }
-    }
 
     fun getSwipeSummary(date: Date, callback: (List<SwipeSummary>) -> Unit) {
 
@@ -239,6 +236,7 @@ class SwipeRepository @Inject constructor(
                         R.drawable.ic_clock,
                         "Total in time",
                         DateUtils2.getDuration(inSwipeInMs)
+
                     )
                 )
 
@@ -273,11 +271,10 @@ class SwipeRepository @Inject constructor(
 
         }
 
-
     }
 
 
-    private fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
+    fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
 
         val map = mutableMapOf<SwipeTag, Long>()
 

@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(
 
     val currentDate = MutableLiveData<Calendar>()
     private val swipeSessions = Transformations.switchMap(currentDate) { date ->
-        swipeRepository.getSwipeSessions(date)
+        swipeRepository.getSwipeSessions(date.time)
     }
 
     val totalInSwipe = ObservableField("00:00:00")

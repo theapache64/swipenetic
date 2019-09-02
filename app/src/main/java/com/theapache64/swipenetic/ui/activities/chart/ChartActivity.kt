@@ -10,17 +10,27 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivityChartBinding
+import com.theapache64.swipenetic.models.SwipeTag
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
+import java.io.Serializable
+import java.util.*
 import javax.inject.Inject
 
 class ChartActivity : BaseAppCompatActivity(), ChartHandler {
 
     companion object {
-        fun getStartIntent(context: Context, totalInSwipe : Long): Intent {
+
+        private const val KEY_DATE = "date"
+
+        fun getStartIntent(
+            context: Context,
+            date: Date
+        ): Intent {
             return Intent(context, ChartActivity::class.java).apply {
                 // data goes here
+                putExtra(KEY_DATE, date)
             }
         }
     }
@@ -44,8 +54,8 @@ class ChartActivity : BaseAppCompatActivity(), ChartHandler {
         binding.handler = this
         binding.viewModel = viewModel
 
-
-        viewModel.init()
+        val date = intent.getStringExtra(KEY_DATE) as Date
+        viewModel.init(date)
 
         viewModel.getChartData().observe(this, Observer { data ->
             val pieDataSet = PieDataSet(
@@ -54,6 +64,7 @@ class ChartActivity : BaseAppCompatActivity(), ChartHandler {
             )
 
             binding.pcSwipe.data = PieData(pieDataSet)
+            binding.pcSwipe.invalidate()
         })
 
         viewModel.loadChartData()

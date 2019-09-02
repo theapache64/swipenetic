@@ -72,7 +72,9 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_show_chart -> {
-                startActivity(ChartActivity.getStartIntent(this))
+                viewModel.filterInSwipe { inSwipe ->
+                    startActivity(ChartActivity.getStartIntent(this, inSwipe, viewModel.))
+                }
             }
             else -> return super.onOptionsItemSelected(item)
         }
