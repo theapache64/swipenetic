@@ -50,6 +50,16 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
         binding.handler = this
         binding.viewModel = viewModel
 
+
+        // Watching for subtitle
+        viewModel.getToolbarSubtitle().observe(this, Observer {
+            binding.toolbar.apply {
+                post {
+                    subtitle = it
+                }
+            }
+        })
+
         viewModel.getSwipeSummary().observe(this, Observer {
 
             info("Swipe summary loaded : $it")
@@ -72,9 +82,7 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_show_chart -> {
-                viewModel.filterInSwipe { inSwipe ->
-                    startActivity(ChartActivity.getStartIntent(this, inSwipe, viewModel.))
-                }
+                startActivity(ChartActivity.getStartIntent(this, viewModel.date))
             }
             else -> return super.onOptionsItemSelected(item)
         }

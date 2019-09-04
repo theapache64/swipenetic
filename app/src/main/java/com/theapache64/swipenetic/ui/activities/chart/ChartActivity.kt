@@ -2,19 +2,17 @@ package com.theapache64.swipenetic.ui.activities.chart
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivityChartBinding
-import com.theapache64.swipenetic.models.SwipeTag
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import dagger.android.AndroidInjection
-import java.io.Serializable
 import java.util.*
 import javax.inject.Inject
 
@@ -54,17 +52,16 @@ class ChartActivity : BaseAppCompatActivity(), ChartHandler {
         binding.handler = this
         binding.viewModel = viewModel
 
-        val date = intent.getStringExtra(KEY_DATE) as Date
+        val date = intent.getSerializableExtra(KEY_DATE) as Date
         viewModel.init(date)
 
-        viewModel.getChartData().observe(this, Observer { data ->
-            val pieDataSet = PieDataSet(
-                data.toMutableList(),
-                "Swipe Data"
-            )
+        binding.pcSwipe.setEntryLabelColor(Color.BLACK)
+        binding.pcSwipe.description = null
 
-            binding.pcSwipe.data = PieData(pieDataSet)
-            binding.pcSwipe.invalidate()
+        viewModel.getChartData().observe(this, Observer { data ->
+            data.setValueFormatter(PercentFormatter(binding.pcSwipe))
+            binding.pcSwipe.setUsePercentValues(true)
+            binding.pcSwipe.data = data
         })
 
         viewModel.loadChartData()

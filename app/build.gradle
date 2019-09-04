@@ -70,6 +70,9 @@ dependencies {
     // Chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
+    // Percentage calculation
+    implementation 'com.theapache64.quick-percent:quick-percent:1.0.0-alpha01'
+
 
     // Test
     testImplementation "junit:junit:$junit_version"

@@ -315,4 +315,19 @@ class SwipeRepository @Inject constructor(
         return map
     }
 
+    /**
+     * To get in swipe time and out swipe times with theirs tags
+     */
+    fun getInTimeAndOutTags(date: Date, callback: (Long, Map<SwipeTag, Long>) -> Unit) {
+        appExecutors.diskIO().execute {
+            val dateFormatted = DateUtils.toDDMMYYY(date)
+            val swipes = swipeDao.getSwipes(dateFormatted)
+            val inSwipesInMillis = getTotalInSwipesInMillis(swipes)
+            val outTags = getSwipeTagWithTotalTimeSpent(swipes)
+            appExecutors.mainThread().execute {
+                callback(inSwipesInMillis, outTags)
+            }
+        }
+    }
+
 }
