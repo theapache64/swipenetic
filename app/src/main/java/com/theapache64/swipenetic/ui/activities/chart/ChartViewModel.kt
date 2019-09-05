@@ -1,6 +1,7 @@
 package com.theapache64.swipenetic.ui.activities.chart
 
 import android.graphics.Color
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.mikephil.charting.data.PieData
@@ -21,6 +22,8 @@ class ChartViewModel @Inject constructor(
     private lateinit var date: Date
     fun init(date: Date) {
         this.date = date
+        this.toolbarSubTitle.value =
+            com.theapache64.twinkill.utils.DateUtils.getReadableFormat(date)
     }
 
     private val chartData = MutableLiveData<PieData>()
@@ -53,4 +56,7 @@ class ChartViewModel @Inject constructor(
         }
 
     }
+
+    val toolbarSubTitle = MutableLiveData<String>()
+    fun getToolbarSubTitle(): LiveData<String> = toolbarSubTitle
 }

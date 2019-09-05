@@ -58,6 +58,16 @@ class ChartActivity : BaseAppCompatActivity(), ChartHandler {
         binding.pcSwipe.setEntryLabelColor(Color.BLACK)
         binding.pcSwipe.description = null
 
+
+        // Watching for subtitle
+        viewModel.getToolbarSubTitle().observe(this, Observer {
+            binding.toolbar.apply {
+                post {
+                    subtitle = it
+                }
+            }
+        })
+
         viewModel.getChartData().observe(this, Observer { data ->
             data.setValueFormatter(PercentFormatter(binding.pcSwipe))
             binding.pcSwipe.setUsePercentValues(true)

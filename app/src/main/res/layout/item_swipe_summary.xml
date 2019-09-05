@@ -27,9 +27,11 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_margin="8dp"
-                android:tint="@color/grey_900"
+                android:padding="8dp"
+                android:src="@{swipeSummary.image}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/grey_900"
                 tools:src="@drawable/ic_table_tennis" />
 
             <!--Label-->

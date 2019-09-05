@@ -20,4 +20,6 @@
     <string name="label_total_out_time">Out Swipe</string>
     <string name="label_time_spent_coffee">Spent for coffee</string>
     <string name="action_show_chart">Show Chart</string>
+    <string name="label_chart">Chart</string>
+    <string name="error_no_swipe_found">No swipe found</string>
 </resources>

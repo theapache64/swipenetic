@@ -50,7 +50,6 @@ class SummaryActivity : BaseAppCompatActivity(), SummaryHandler {
         binding.handler = this
         binding.viewModel = viewModel
 
-
         // Watching for subtitle
         viewModel.getToolbarSubtitle().observe(this, Observer {
             binding.toolbar.apply {

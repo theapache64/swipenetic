@@ -30,6 +30,7 @@ import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.ui.widgets.LoadingView
 import com.theapache64.twinkill.utils.Resource
 import com.theapache64.twinkill.utils.extensions.bindContentView
+import com.theapache64.twinkill.utils.extensions.toast
 import dagger.android.AndroidInjection
 import java.util.*
 import javax.inject.Inject
@@ -37,6 +38,7 @@ import javax.inject.Inject
 class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDateSetListener {
 
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var sessionsAdapter: SwipeSessionsAdapter
     @Inject
     lateinit var factory: ViewModelProvider.Factory
@@ -46,7 +48,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
-        val binding = bindContentView<ActivityMainBinding>(R.layout.activity_main)
+        this.binding = bindContentView<ActivityMainBinding>(R.layout.activity_main)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -156,12 +158,16 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         when (item.itemId) {
 
             R.id.action_show_summary -> {
-                startActivity(
-                    SummaryActivity.getStartIntent(
-                        this,
-                        viewModel.getCurrentDate()
+                if (binding.iContentMain.rvSwipeSessions.adapter != null) {
+                    startActivity(
+                        SummaryActivity.getStartIntent(
+                            this,
+                            viewModel.getCurrentDate()
+                        )
                     )
-                )
+                } else {
+                    toast(R.string.error_no_swipe_found)
+                }
             }
 
             R.id.action_change_date -> {

@@ -16,7 +16,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.activities.chart.ChartActivity"></activity>
+        <activity
+            android:name=".ui.activities.chart.ChartActivity"
+            android:label="@string/label_chart"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.activities.summary.SummaryActivity"
             android:label="@string/label_summary"
