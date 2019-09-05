@@ -1,8 +1,6 @@
 package com.theapache64.swipenetic.services
 
-
 import android.service.quicksettings.TileService
-
 
 class SwipeneticTileService : TileService() {
 

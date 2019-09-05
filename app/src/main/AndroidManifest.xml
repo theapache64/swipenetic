@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.theapache64.swipenetic">
 
+    <!--To update tile -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
@@ -16,20 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity
-            android:name=".ui.activities.chart.ChartActivity"
-            android:label="@string/label_chart"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.activities.summary.SummaryActivity"
-            android:label="@string/label_summary"
-            android:theme="@style/AppTheme.NoActionBar" />
 
-        <service
-            android:name=".services.LiveTimeUpdateService"
-            android:enabled="true"
-            android:exported="true" />
 
+        <!--Splash-->
         <activity
             android:name=".ui.activities.splash.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -38,7 +28,9 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Main -->
+        </activity>
+
+        <!-- Main -->
         <activity
             android:name=".ui.activities.main.MainActivity"
             android:label="@string/app_name"
@@ -48,6 +40,25 @@
             </intent-filter>
         </activity>
 
+        <!--Summary-->
+        <activity
+            android:name=".ui.activities.summary.SummaryActivity"
+            android:label="@string/label_summary"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--Chart-->
+        <activity
+            android:name=".ui.activities.chart.ChartActivity"
+            android:label="@string/label_chart"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--Live time updater service-->
+        <service
+            android:name=".services.LiveTimeUpdateService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!--Tile service-->
         <service
             android:name=".services.SwipeneticTileService"
             android:icon="@drawable/ic_clock"
@@ -57,6 +68,7 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
+
     </application>
 
 </manifest>
