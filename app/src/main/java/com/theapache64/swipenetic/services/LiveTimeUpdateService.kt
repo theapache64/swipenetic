@@ -3,6 +3,7 @@ package com.theapache64.swipenetic.services
 import android.app.Dialog
 import android.app.Service
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
 import android.service.quicksettings.Tile
 import android.widget.Toast
@@ -18,12 +19,15 @@ import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class LiveTimeUpdateService : Service() {
 
     companion object {
+        private const val OFFICE_WIFI = ""
 
+        private var smartCheckRepeater = Repeater(TimeUnit.MINUTES.toMillis(15))
         private var repeater = Repeater(1000)
         private lateinit var swipeneticTileService: SwipeneticTileService
         const val ACTION_LISTEN = "listen"
@@ -61,6 +65,19 @@ class LiveTimeUpdateService : Service() {
             .build()
 
         startForeground(1324, not)
+
+        startSmartCheck()
+    }
+
+    private val handler = Handler()
+    private fun startSmartCheck() {
+        smartCheckRepeater.cancel()
+        smartCheckRepeater.startExecute {
+            info("Starting smart check")
+
+            // Checking if connected to office wifi
+            if(WifiUtils.isConnectedTo(OFFICE_WIFI))
+        }
     }
 
 
@@ -200,6 +217,11 @@ class LiveTimeUpdateService : Service() {
             }
         }
 
+    }
+
+    override fun onDestroy() {
+        smartCheckRepeater.cancel()
+        super.onDestroy()
     }
 
 }
