@@ -1,6 +1,7 @@
 package com.theapache64.swipenetic.services
 
 import android.service.quicksettings.TileService
+import dagger.android.AndroidInjection
 
 class SwipeneticTileService : TileService() {
 
@@ -13,6 +14,12 @@ class SwipeneticTileService : TileService() {
                 LiveTimeUpdateService.ACTION_CLICK
             )
         )
+    }
+
+    override fun onTileAdded() {
+        super.onTileAdded()
+
+
     }
 
     override fun onStartListening() {

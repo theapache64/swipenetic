@@ -10,8 +10,8 @@ android {
         applicationId "com.theapache64.swipenetic"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 10001
-        versionName "1.0.0-alpha01"
+        versionCode 10002
+        versionName "1.0.0-alpha02"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

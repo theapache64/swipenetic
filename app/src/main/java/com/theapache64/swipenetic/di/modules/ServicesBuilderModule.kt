@@ -2,6 +2,7 @@ package com.theapache64.swipenetic.di.modules
 
 
 import com.theapache64.swipenetic.services.LiveTimeUpdateService
+import com.theapache64.swipenetic.services.SwipeneticTileService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -12,5 +13,9 @@ import dagger.android.ContributesAndroidInjector
 abstract class ServicesBuilderModule {
 
     @ContributesAndroidInjector
+    abstract fun getSwipeneticTileService(): SwipeneticTileService
+
+    @ContributesAndroidInjector
     abstract fun getLiveTimeUpdateService(): LiveTimeUpdateService
+
 }

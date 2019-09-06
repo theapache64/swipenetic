@@ -104,9 +104,6 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             viewModel.loadSwipeSessions()
             viewModel.checkAndStartTotalInSwipeCounting()
         })
-
-
-        startActivity(SummaryActivity.getStartIntent(this, Date()))
     }
 
     private fun setSwipeTag(position: Int, swipe: Swipe) {

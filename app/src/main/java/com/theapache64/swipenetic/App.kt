@@ -52,6 +52,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     }
 
     private fun createNotificationChannel() {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = getString(R.string.channel_timer_name)
             val descriptionText = getString(R.string.channel_time_desc)
