@@ -1,7 +1,6 @@
 package com.theapache64.swipenetic.services
 
 import android.service.quicksettings.TileService
-import dagger.android.AndroidInjection
 
 class SwipeneticTileService : TileService() {
 
@@ -18,8 +17,6 @@ class SwipeneticTileService : TileService() {
 
     override fun onTileAdded() {
         super.onTileAdded()
-
-
     }
 
     override fun onStartListening() {
