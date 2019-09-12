@@ -93,7 +93,7 @@ class SwipeRepository @Inject constructor(
         appExecutors.diskIO().execute {
             val ddmmYYYYdate = DateUtils.toDDMMYYY(date)
             val swipes = swipeDao.getSwipes(ddmmYYYYdate)
-            val sessions = getSwipeSessionsFromSwipes(swipes)
+            val sessions = getSwipeSessionsFromSwipes(date, swipes)
             if (sessions.isNotEmpty()) {
                 swipeSessions.postValue(Resource.success(sessions))
             } else {
@@ -104,7 +104,7 @@ class SwipeRepository @Inject constructor(
         return swipeSessions
     }
 
-    private fun getSwipeSessionsFromSwipes(swipes: List<Swipe>): List<SwipeSession> {
+    private fun getSwipeSessionsFromSwipes(date: Date, swipes: List<Swipe>): List<SwipeSession> {
 
         val swipeSessions = mutableListOf<SwipeSession>()
 
@@ -148,18 +148,20 @@ class SwipeRepository @Inject constructor(
                     )
                 } else {
                     // Start out swipe session
-                    val currentTime = Date()
-                    swipeSessions.add(
-                        SwipeSession(
-                            Swipe.Type.OUT,
-                            currentTime.time - outSwipe.timestamp.time,
-                            outSwipe.tag,
-                            DateUtils2.tohmma(outSwipe.timestamp),
-                            DateUtils2.tohmma(currentTime),
-                            outSwipe,
-                            null
+                    if (android.text.format.DateUtils.isToday(date.time)) {
+                        val currentTime = Date()
+                        swipeSessions.add(
+                            SwipeSession(
+                                Swipe.Type.OUT,
+                                currentTime.time - outSwipe.timestamp.time,
+                                outSwipe.tag,
+                                DateUtils2.tohmma(outSwipe.timestamp),
+                                DateUtils2.tohmma(currentTime),
+                                outSwipe,
+                                null
+                            )
                         )
-                    )
+                    }
                 }
 
             } else {
@@ -302,11 +304,13 @@ class SwipeRepository @Inject constructor(
                 } else {
 
                     // currently out
-                    val diff = Date().time - outSwipe.timestamp.time
-                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
-                        diff
-                    } else {
-                        map[outSwipe.tag]!! + diff
+                    if (android.text.format.DateUtils.isToday(outSwipe.timestamp.time)) {
+                        val diff = Date().time - outSwipe.timestamp.time
+                        map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                            diff
+                        } else {
+                            map[outSwipe.tag]!! + diff
+                        }
                     }
                 }
             }

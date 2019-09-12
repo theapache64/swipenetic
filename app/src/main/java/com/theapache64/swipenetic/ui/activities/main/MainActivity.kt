@@ -48,7 +48,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
-        this.binding = bindContentView<ActivityMainBinding>(R.layout.activity_main)
+        this.binding = bindContentView(R.layout.activity_main)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -90,6 +90,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                     startUpdatingFirstItem(sessionsAdapter, sessions)
                     binding.iContentMain.gContentMain.visibility = View.VISIBLE
                     rvSwipeSessions.adapter = sessionsAdapter
+                    viewModel.checkAndStartTotalInSwipeCounting()
                 }
                 Resource.Status.ERROR -> {
                     binding.iContentMain.gContentMain.visibility = View.GONE
@@ -102,7 +103,6 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         viewModel.getSwipeChange().observe(this, Observer { ids ->
             // Data changed
             viewModel.loadSwipeSessions()
-            viewModel.checkAndStartTotalInSwipeCounting()
         })
     }
 
