@@ -104,6 +104,15 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             // Data changed
             viewModel.loadSwipeSessions()
         })
+
+        // Watch for date
+        viewModel.getCurrentDateLiveData().observe(this, Observer {
+            binding.toolbar.apply {
+                post {
+                    subtitle = com.theapache64.twinkill.utils.DateUtils.getReadableFormat(it.time)
+                }
+            }
+        })
     }
 
     private fun setSwipeTag(position: Int, swipe: Swipe) {

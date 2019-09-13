@@ -46,6 +46,7 @@ class MainViewModel @Inject constructor(
                 swipeRepository.getLastSwipeToday { lastSwipe ->
                     if (lastSwipe != null && lastSwipe.type == Swipe.Type.IN) {
                         // user is in, so start count down
+                        swipeTimeRepeater.cancel()
                         swipeTimeRepeater.startExecute {
                             inSwipeInMillis += 1000
                             totalInTime = DateUtils2.toHHmmss(inSwipeInMillis)
@@ -90,4 +91,6 @@ class MainViewModel @Inject constructor(
     fun getCurrentDate(): Date {
         return currentDate.value?.time ?: Calendar.getInstance().time
     }
+
+    fun getCurrentDateLiveData() = currentDate
 }
