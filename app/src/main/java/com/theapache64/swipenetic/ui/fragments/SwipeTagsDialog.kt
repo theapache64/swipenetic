@@ -2,13 +2,12 @@ package com.theapache64.swipenetic.ui.fragments
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.LayoutSwipeTagAlertBinding
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.ui.adapters.SwipeTagsAdapter
 
 object SwipeTagsDialog {
@@ -35,6 +34,6 @@ object SwipeTagsDialog {
     }
 
     interface Callback {
-        fun onSwipeTagSelected(swipeTag: SwipeTag, dialog: Dialog)
+        fun onSwipeTagSelected(swipeOutTag: SwipeOutTag, dialog: Dialog)
     }
 }

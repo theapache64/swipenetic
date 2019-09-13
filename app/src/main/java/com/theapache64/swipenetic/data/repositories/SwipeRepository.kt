@@ -7,7 +7,7 @@ import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.models.SwipeSummary
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.twinkill.utils.AppExecutors
 import com.theapache64.twinkill.utils.DateUtils
@@ -139,7 +139,7 @@ class SwipeRepository @Inject constructor(
                         SwipeSession(
                             Swipe.Type.OUT,
                             inSwipeTwo.timestamp.time - outSwipe.timestamp.time,
-                            outSwipe.tag,
+                            outSwipe.outTag,
                             DateUtils2.tohmma(outSwipe.timestamp),
                             DateUtils2.tohmma(inSwipeTwo.timestamp),
                             outSwipe,
@@ -154,7 +154,7 @@ class SwipeRepository @Inject constructor(
                             SwipeSession(
                                 Swipe.Type.OUT,
                                 currentTime.time - outSwipe.timestamp.time,
-                                outSwipe.tag,
+                                outSwipe.outTag,
                                 DateUtils2.tohmma(outSwipe.timestamp),
                                 DateUtils2.tohmma(currentTime),
                                 outSwipe,
@@ -276,9 +276,9 @@ class SwipeRepository @Inject constructor(
     }
 
 
-    fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeTag, Long> {
+    fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeOutTag, Long> {
 
-        val map = mutableMapOf<SwipeTag, Long>()
+        val map = mutableMapOf<SwipeOutTag, Long>()
 
         for (i in 0 until swipes.size step 2) {
 
@@ -296,20 +296,20 @@ class SwipeRepository @Inject constructor(
                     // next in is available
                     val inSwipe2 = swipes[inSwipe2Index]
                     val diff = inSwipe2.timestamp.time - outSwipe.timestamp.time
-                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                    map[outSwipe.outTag] = if (map[outSwipe.outTag] == null) {
                         diff
                     } else {
-                        map[outSwipe.tag]!! + diff
+                        map[outSwipe.outTag]!! + diff
                     }
                 } else {
 
                     // currently out
                     if (android.text.format.DateUtils.isToday(outSwipe.timestamp.time)) {
                         val diff = Date().time - outSwipe.timestamp.time
-                        map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                        map[outSwipe.outTag] = if (map[outSwipe.outTag] == null) {
                             diff
                         } else {
-                            map[outSwipe.tag]!! + diff
+                            map[outSwipe.outTag]!! + diff
                         }
                     }
                 }
@@ -322,7 +322,7 @@ class SwipeRepository @Inject constructor(
     /**
      * To get in swipe time and out swipe times with theirs tags
      */
-    fun getInTimeAndOutTags(date: Date, callback: (Long, Map<SwipeTag, Long>) -> Unit) {
+    fun getInTimeAndOutTags(date: Date, callback: (Long, Map<SwipeOutTag, Long>) -> Unit) {
         appExecutors.diskIO().execute {
             val dateFormatted = DateUtils.toDDMMYYY(date)
             val swipes = swipeDao.getSwipes(dateFormatted)

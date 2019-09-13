@@ -5,14 +5,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.theapache64.swipenetic.databinding.ItemSwipeTagBinding
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 
 class SwipeTagsAdapter(
     context: Context,
-    private val callback: (swipeTag: SwipeTag) -> Unit
+    private val callback: (swipeOutTag: SwipeOutTag) -> Unit
 ) : RecyclerView.Adapter<SwipeTagsAdapter.ViewHolder>() {
 
-    private val swipeTags = SwipeTag.values()
+    private val swipeTags = SwipeOutTag.values()
     private val inflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

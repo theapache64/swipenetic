@@ -1,7 +1,7 @@
 package com.theapache64.swipenetic.data.repositories
 
 import com.theapache64.swipenetic.data.local.entities.Swipe
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import org.junit.Test
 import java.util.*
 
@@ -13,12 +13,12 @@ class SwipeRepositoryTest {
             Swipe(Date(1000), Swipe.Type.IN),
             Swipe(Date(2000), Swipe.Type.OUT),
             Swipe(Date(4000), Swipe.Type.IN),
-            Swipe(Date(4000), Swipe.Type.OUT, SwipeTag.COFFEE),
+            Swipe(Date(4000), Swipe.Type.OUT, SwipeOutTag.COFFEE),
             Swipe(Date(5000), Swipe.Type.IN)
 
         )
 
-        val map = mutableMapOf<SwipeTag, Long>()
+        val map = mutableMapOf<SwipeOutTag, Long>()
 
         for (i in 0 until swipes.size step 2) {
 
@@ -36,18 +36,18 @@ class SwipeRepositoryTest {
                     // next in is available
                     val inSwipe2 = swipes[inSwipe2Index]
                     val diff = inSwipe2.timestamp.time - outSwipe.timestamp.time
-                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                    map[outSwipe.outTag] = if (map[outSwipe.outTag] == null) {
                         diff
                     } else {
-                        map[outSwipe.tag]!! + diff
+                        map[outSwipe.outTag]!! + diff
                     }
                 } else {
 
                     // currently out
-                    map[outSwipe.tag] = if (map[outSwipe.tag] == null) {
+                    map[outSwipe.outTag] = if (map[outSwipe.outTag] == null) {
                         Date().time
                     } else {
-                        map[outSwipe.tag]!! + Date().time
+                        map[outSwipe.outTag]!! + Date().time
                     }
                 }
             }

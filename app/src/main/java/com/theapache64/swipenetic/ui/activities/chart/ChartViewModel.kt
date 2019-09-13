@@ -10,7 +10,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.theapache64.quickpercent.isWhatPercentOf
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.twinkill.logger.info
 import java.util.*
 import javax.inject.Inject
@@ -32,7 +32,7 @@ class ChartViewModel @Inject constructor(
     fun loadChartData() {
 
         // Getting in time
-        swipeRepository.getInTimeAndOutTags(date) { inTime: Long, outTags: Map<SwipeTag, Long> ->
+        swipeRepository.getInTimeAndOutTags(date) { inTime: Long, outTags: Map<SwipeOutTag, Long> ->
             info("InTime is ${inTime}")
             info("OutTags are $outTags")
             val totalTime = inTime + outTags.values.sum()

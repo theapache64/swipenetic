@@ -13,7 +13,7 @@ import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.swipenetic.exts.updateTile
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
@@ -133,9 +133,9 @@ class LiveTimeUpdateService : Service() {
                     SwipeTagsDialog.create(
                         swipeneticTileService,
                         object : SwipeTagsDialog.Callback {
-                            override fun onSwipeTagSelected(swipeTag: SwipeTag, dialog: Dialog) {
+                            override fun onSwipeTagSelected(swipeOutTag: SwipeOutTag, dialog: Dialog) {
                                 swipeRepository.getLastSwipeToday { lastSwipe ->
-                                    lastSwipe!!.tag = swipeTag
+                                    lastSwipe!!.outTag = swipeOutTag
                                     swipeRepository.update(lastSwipe)
                                     dialog.dismiss()
                                 }

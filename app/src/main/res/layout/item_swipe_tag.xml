@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="swipeTag"
-            type="com.theapache64.swipenetic.models.SwipeTag" />
+            name="swipeOutTag"
+            type="com.theapache64.swipenetic.models.SwipeOutTag" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -28,7 +28,7 @@
                 android:id="@+id/iv_tag_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@{swipeTag.image}"
+                android:src="@{swipeOutTag.image}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@{swipeTag.label}"
+                android:text="@{swipeOutTag.label}"
                 app:layout_constraintEnd_toEndOf="@id/iv_tag_image"
                 app:layout_constraintStart_toStartOf="@id/iv_tag_image"
                 app:layout_constraintTop_toBottomOf="@id/iv_tag_image"

@@ -6,7 +6,7 @@ import com.theapache64.swipenetic.utils.DateUtils2
 data class SwipeSession(
     val type: Swipe.Type,
     var duration: Long,
-    val tag: SwipeTag?,
+    val outTag: SwipeOutTag?,
     val timeFrom: String,
     var timeTo: String,
     val startSwipe: Swipe,

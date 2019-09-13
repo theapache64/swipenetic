@@ -19,7 +19,7 @@ import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
 import com.theapache64.swipenetic.models.SwipeSession
-import com.theapache64.swipenetic.models.SwipeTag
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.ui.activities.summary.SummaryActivity
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
@@ -117,8 +117,8 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
 
     private fun setSwipeTag(position: Int, swipe: Swipe) {
         SwipeTagsDialog.create(this, object : SwipeTagsDialog.Callback {
-            override fun onSwipeTagSelected(swipeTag: SwipeTag, dialog: Dialog) {
-                swipe.tag = swipeTag
+            override fun onSwipeTagSelected(swipeOutTag: SwipeOutTag, dialog: Dialog) {
+                swipe.outTag = swipeOutTag
                 viewModel.updateSwipe(swipe)
                 dialog.dismiss()
                 sessionsAdapter.notifyItemChanged(position)
