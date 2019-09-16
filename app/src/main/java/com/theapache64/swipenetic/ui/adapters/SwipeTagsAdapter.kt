@@ -24,7 +24,7 @@ class SwipeTagsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val swipeTag = swipeTags[position]
-        holder.binding.swipeTag = swipeTag
+        holder.binding.swipeOutTag = swipeTag
     }
 
     inner class ViewHolder(val binding: ItemSwipeTagBinding) :

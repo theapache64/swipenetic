@@ -1,4 +1,5 @@
 package com.theapache64.swipenetic.di.modules
+import com.theapache64.swipenetic.ui.activities.intro.IntroActivity
 
 
 import com.theapache64.swipenetic.ui.activities.chart.ChartActivity
@@ -25,5 +26,8 @@ abstract class ActivitiesBuilderModule {
 
     @ContributesAndroidInjector
     abstract fun getChartActivity(): ChartActivity
+
+@ContributesAndroidInjector
+abstract fun getIntroActivity(): IntroActivity
 
 }

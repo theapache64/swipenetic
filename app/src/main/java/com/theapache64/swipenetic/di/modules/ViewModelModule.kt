@@ -1,4 +1,5 @@
 package com.theapache64.swipenetic.di.modules
+import com.theapache64.swipenetic.ui.activities.intro.IntroViewModel
 
 import androidx.lifecycle.ViewModel
 import com.theapache64.swipenetic.ui.activities.chart.ChartViewModel
@@ -34,5 +35,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChartViewModel::class)
     abstract fun bindChartViewModel(viewModel: ChartViewModel): ViewModel
+
+@Binds
+@IntoMap
+@ViewModelKey(IntroViewModel::class)
+abstract fun bindIntroViewModel(viewModel: IntroViewModel): ViewModel
 
 }

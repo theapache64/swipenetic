@@ -14,7 +14,7 @@ class DatabaseModule {
     @Singleton
     @Provides
     fun provideDatabase(app: Application): AppDatabase {
-        return Room.databaseBuilder(app, AppDatabase::class.java, "swipenetic.db")
+        return Room.databaseBuilder(app, AppDatabase::class.java, "swipenetic.sqlite")
             .build()
     }
 

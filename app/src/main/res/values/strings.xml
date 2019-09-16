@@ -22,4 +22,5 @@
     <string name="action_show_chart">Show Chart</string>
     <string name="label_chart">Chart</string>
     <string name="error_no_swipe_found">No swipe found</string>
+    <string name="intro_add_tile">Seems like you have not added Tile. Please add swipenetic tile and restart the app</string>
 </resources>

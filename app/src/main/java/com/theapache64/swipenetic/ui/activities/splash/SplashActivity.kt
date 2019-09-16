@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.databinding.ActivitySplashBinding
+import com.theapache64.swipenetic.ui.activities.intro.IntroActivity
 import com.theapache64.swipenetic.ui.activities.main.MainActivity
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
@@ -32,8 +33,13 @@ class SplashActivity : BaseAppCompatActivity(), SplashHandler {
         viewModel.getLaunchActivityEvent().observe(this, Observer { activityId ->
 
             when (activityId) {
+
                 MainActivity.ID -> {
                     startActivity(MainActivity.getStartIntent(this))
+                }
+
+                IntroActivity.ID -> {
+                    startActivity(IntroActivity.getStartIntent(this))
                 }
 
                 else -> throw IllegalArgumentException("Undefined activity id $activityId")
@@ -47,6 +53,7 @@ class SplashActivity : BaseAppCompatActivity(), SplashHandler {
         Handler().postDelayed({
             viewModel.goToNextScreen()
         }, SPLASH_DURATION)
+
 
     }
 

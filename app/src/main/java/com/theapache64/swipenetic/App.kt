@@ -7,6 +7,7 @@ import android.os.Build
 import com.theapache64.swipenetic.di.components.DaggerAppComponent
 import com.theapache64.swipenetic.di.modules.AppModule
 import com.theapache64.twinkill.TwinKill
+import com.theapache64.twinkill.di.modules.ContextModule
 import com.theapache64.twinkill.googlesans.GoogleSans
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -35,6 +36,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
         // Dagger
         DaggerAppComponent.builder()
+            .contextModule(ContextModule(this))
             .appModule(AppModule(this))
             .build()
             .inject(this)
