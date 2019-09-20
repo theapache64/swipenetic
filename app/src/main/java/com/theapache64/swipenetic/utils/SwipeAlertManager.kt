@@ -38,6 +38,7 @@ class SwipeAlertManager @Inject constructor(
 
             if (timeRemaining > 0) {
                 // has balance time
+                notifyRemSwipeOut(context, timeRemaining, swipeOutTag)
                 scheduleNotification(context, timeRemaining, swipeOutTag)
             } else {
                 notifyOverSwipeOut(context, swipeOutTag)
@@ -45,9 +46,24 @@ class SwipeAlertManager @Inject constructor(
         }
     }
 
+    private fun notifyRemSwipeOut(
+        context: Context,
+        timeRemainingInMillis: Long,
+        swipeOutTag: SwipeOutTag
+    ) {
+        val minRem = TimeUnit.MILLISECONDS.toMinutes(timeRemainingInMillis)
+        val minOrMins = if (minRem <= 1) "minute" else "minutes"
+        val message = "You have $minRem $minOrMins remaining in ${swipeOutTag.label}"
+        notify(context, message)
+    }
+
     private fun notifyOverSwipeOut(context: Context, swipeOutTag: SwipeOutTag) {
         val timeSpent = TimeUnit.MILLISECONDS.toMinutes(swipeOutTag.maxTimeAllowedPerDayInMillis)
         val message = "You have spent more than $timeSpent minutes in ${swipeOutTag.label}"
+        notify(context, message)
+    }
+
+    private fun notify(context: Context, message: String) {
 
         val n = NotificationCompat.Builder(context, App.CHANNEL_ALERT_ID)
             .setSmallIcon(R.drawable.ic_clock)
@@ -57,7 +73,7 @@ class SwipeAlertManager @Inject constructor(
             .build()
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(1345, n)
+        nm.notify(Math.random().toInt(), n)
     }
 
     private fun scheduleNotification(
