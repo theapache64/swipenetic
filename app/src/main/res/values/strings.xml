@@ -23,4 +23,6 @@
     <string name="label_chart">Chart</string>
     <string name="error_no_swipe_found">No swipe found</string>
     <string name="intro_add_tile">Seems like you have not added Tile. Please add swipenetic tile and restart the app</string>
+    <string name="notif_title_alert">Alert</string>
+    <string name="notif_title_over_swipe">Over Swipe Out</string>
 </resources>

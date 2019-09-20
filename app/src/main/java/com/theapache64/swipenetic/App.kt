@@ -19,6 +19,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
 
     companion object {
         const val CHANNEL_TIMER_ID = "timer"
+        const val CHANNEL_ALERT_ID = "alert"
     }
 
     @Inject

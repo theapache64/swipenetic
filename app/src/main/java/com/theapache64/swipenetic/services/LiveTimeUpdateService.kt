@@ -1,6 +1,7 @@
 package com.theapache64.swipenetic.services
 
 import android.app.Dialog
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.Handler
@@ -8,17 +9,21 @@ import android.os.IBinder
 import android.service.quicksettings.Tile
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.work.WorkManager
 import com.theapache64.swipenetic.App
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
+import com.theapache64.swipenetic.data.repositories.GeneralPrefRepository
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.swipenetic.exts.updateTile
 import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
+import com.theapache64.swipenetic.utils.SwipeAlertManager
 import com.theapache64.twinkill.logger.info
 import dagger.android.AndroidInjection
+import java.util.*
 import javax.inject.Inject
 
 class LiveTimeUpdateService : Service() {
@@ -44,7 +49,13 @@ class LiveTimeUpdateService : Service() {
 
 
     @Inject
+    lateinit var generalPrefRepository: GeneralPrefRepository
+
+    @Inject
     lateinit var swipeRepository: SwipeRepository
+
+    @Inject
+    lateinit var swipeAlertManager: SwipeAlertManager
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -54,14 +65,17 @@ class LiveTimeUpdateService : Service() {
         super.onCreate()
         AndroidInjection.inject(this)
 
-        val not = NotificationCompat.Builder(this, App.CHANNEL_TIMER_ID)
+        val not = createForegroundNotification()
+        startForeground(1324, not)
+    }
+
+    private fun createForegroundNotification(): Notification? {
+        return NotificationCompat.Builder(this, App.CHANNEL_TIMER_ID)
             .setSmallIcon(R.drawable.ic_clock)
             .setContentTitle(getString(R.string.notif_title_live_timer))
             .setContentText(getString(R.string.notif_content_live_timer))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .build()
-
-        startForeground(1324, not)
     }
 
     private val handler = Handler()
@@ -119,6 +133,12 @@ class LiveTimeUpdateService : Service() {
 
                 info("Click is for IN,  starting timer...")
                 startInTimeUpdate()
+
+                // Cancel notification
+                generalPrefRepository.getWorkId()?.let { workId ->
+                    info("Alert cancelled")
+                    WorkManager.getInstance(this).cancelWorkById(UUID.fromString(workId))
+                }
             } else {
                 // user wants to OUT
                 swipeRepository.insertSwipe(Swipe.Type.OUT)
@@ -133,12 +153,23 @@ class LiveTimeUpdateService : Service() {
                     SwipeTagsDialog.create(
                         swipeneticTileService,
                         object : SwipeTagsDialog.Callback {
-                            override fun onSwipeTagSelected(swipeOutTag: SwipeOutTag, dialog: Dialog) {
+                            override fun onSwipeTagSelected(
+                                swipeOutTag: SwipeOutTag,
+                                dialog: Dialog
+                            ) {
+
+                                swipeAlertManager.scheduleAlert(
+                                    this@LiveTimeUpdateService,
+                                    swipeOutTag
+                                )
+
                                 swipeRepository.getLastSwipeToday { lastSwipe ->
                                     lastSwipe!!.outTag = swipeOutTag
                                     swipeRepository.update(lastSwipe)
                                     dialog.dismiss()
                                 }
+
+
                             }
                         })
 
@@ -148,6 +179,7 @@ class LiveTimeUpdateService : Service() {
             swipeneticTileService.qsTile.updateTile(newState, newLabel)
         }
     }
+
 
     private fun updateState() {
 
@@ -202,10 +234,6 @@ class LiveTimeUpdateService : Service() {
             }
         }
 
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
 }

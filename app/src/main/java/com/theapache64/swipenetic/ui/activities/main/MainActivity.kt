@@ -18,8 +18,8 @@ import androidx.lifecycle.ViewModelProviders
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
-import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.models.SwipeOutTag
+import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.ui.activities.summary.SummaryActivity
 import com.theapache64.swipenetic.ui.adapters.SwipeSessionsAdapter
 import com.theapache64.swipenetic.ui.fragments.SwipeTagsDialog
@@ -122,6 +122,11 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                 viewModel.updateSwipe(swipe)
                 dialog.dismiss()
                 sessionsAdapter.notifyItemChanged(position)
+
+                if (position == 0 && DateUtils.isToday(viewModel.getCurrentDate().time)) {
+                    // active out changed
+                    viewModel.resetWorkAlert(swipeOutTag)
+                }
             }
         }).show()
     }

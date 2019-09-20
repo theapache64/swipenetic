@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.dao.SwipeDao
 import com.theapache64.swipenetic.data.local.entities.Swipe
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.models.SwipeSummary
-import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.twinkill.utils.AppExecutors
 import com.theapache64.twinkill.utils.DateUtils
@@ -333,6 +333,7 @@ class SwipeRepository @Inject constructor(
             }
         }
     }
+
 
 
 }

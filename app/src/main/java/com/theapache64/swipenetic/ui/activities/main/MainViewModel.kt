@@ -1,23 +1,31 @@
 package com.theapache64.swipenetic.ui.activities.main
 
 
+import android.app.Application
 import android.text.format.DateUtils
 import androidx.databinding.ObservableField
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.work.WorkManager
 import com.theapache64.swipenetic.data.local.entities.Swipe
+import com.theapache64.swipenetic.data.repositories.GeneralPrefRepository
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
+import com.theapache64.swipenetic.models.SwipeOutTag
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
+import com.theapache64.swipenetic.utils.SwipeAlertManager
 import com.theapache64.twinkill.logger.info
 import java.util.*
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    private val swipeRepository: SwipeRepository
-) : ViewModel() {
+    private val swipeRepository: SwipeRepository,
+    private val generalPrefRepository: GeneralPrefRepository,
+    private val swipeAlertManager: SwipeAlertManager,
+    application: Application
+) : AndroidViewModel(application) {
 
     val currentDate = MutableLiveData<Calendar>()
     private val swipeSessions = Transformations.switchMap(currentDate) { date ->
@@ -25,8 +33,6 @@ class MainViewModel @Inject constructor(
     }
 
     val totalInSwipe = ObservableField("00:00:00")
-
-
     private val swipeTimeRepeater = Repeater(1000)
 
     fun checkAndStartTotalInSwipeCounting() {
@@ -93,4 +99,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun getCurrentDateLiveData() = currentDate
+
+    fun resetWorkAlert(swipeOutTag: SwipeOutTag) {
+
+        // cancelling current work
+        val alertWorkId = generalPrefRepository.getWorkId()
+        val workManager = WorkManager.getInstance(getApplication())
+        workManager.cancelWorkById(UUID.fromString(alertWorkId))
+
+        // creating new work alert
+        swipeAlertManager.scheduleAlert(getApplication(), swipeOutTag)
+    }
 }

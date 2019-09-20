@@ -9,6 +9,7 @@ class GeneralPrefRepository @Inject constructor(
 ) {
     companion object {
         private const val KEY_IS_TILE_ADDED = "is_tile_added"
+        private const val KEY_WORK_ALERT_ID = "work_alert_id"
     }
 
     fun setIsTileAdded(isTileAdded: Boolean) {
@@ -19,6 +20,16 @@ class GeneralPrefRepository @Inject constructor(
 
     fun isTileAdded(): Boolean {
         return sharedPreferences.getBoolean(KEY_IS_TILE_ADDED, false)
+    }
+
+    fun saveWorkId(workId: String?) {
+        sharedPreferences.edit {
+            putString(KEY_WORK_ALERT_ID, workId)
+        }
+    }
+
+    fun getWorkId(): String? {
+        return sharedPreferences.getString(KEY_WORK_ALERT_ID, null)
     }
 
 }
