@@ -11,7 +11,7 @@ enum class SwipeOutTag(
     val maxTimeAllowedPerDayInMillis: Long
 ) : Serializable {
 
-    PANTRY("Pantry", R.drawable.ic_fork, TimeUnit.MINUTES.toMillis(1)),
+    PANTRY("Pantry", R.drawable.ic_fork, TimeUnit.MINUTES.toMillis(10)),
     WASHROOM("Washroom", R.drawable.ic_salah, TimeUnit.MINUTES.toMillis(5)),
     TT("Table Tennis", R.drawable.ic_table_tennis, TimeUnit.MINUTES.toMillis(60)),
     LUNCH("Lunch", R.drawable.ic_serving_dish, TimeUnit.MINUTES.toMillis(30)),
