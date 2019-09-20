@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.theapache64.swipenetic">
+
     <!-- To update tile -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
@@ -16,7 +17,8 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="m">
-        <activity android:name=".ui.activities.intro.IntroActivity"></activity>
+
+        <activity android:name=".ui.activities.intro.IntroActivity" />
         <!-- Splash -->
         <activity
             android:name=".ui.activities.splash.SplashActivity"

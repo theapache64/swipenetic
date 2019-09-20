@@ -2,6 +2,7 @@ package com.theapache64.swipenetic.utils
 
 import android.app.NotificationManager
 import android.content.Context
+import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -54,26 +55,33 @@ class SwipeAlertManager @Inject constructor(
         val minRem = TimeUnit.MILLISECONDS.toMinutes(timeRemainingInMillis)
         val minOrMins = if (minRem <= 1) "minute" else "minutes"
         val message = "You have $minRem $minOrMins remaining in ${swipeOutTag.label}"
-        notify(context, message)
+        notify(context, message, false)
     }
 
     private fun notifyOverSwipeOut(context: Context, swipeOutTag: SwipeOutTag) {
         val timeSpent = TimeUnit.MILLISECONDS.toMinutes(swipeOutTag.maxTimeAllowedPerDayInMillis)
         val message = "You have spent more than $timeSpent minutes in ${swipeOutTag.label}"
-        notify(context, message)
+        notify(context, message, true)
     }
 
-    private fun notify(context: Context, message: String) {
+    private fun notify(context: Context, message: String, isCritical: Boolean) {
 
-        val n = NotificationCompat.Builder(context, App.CHANNEL_ALERT_ID)
+
+        val nb = NotificationCompat.Builder(context, App.CHANNEL_ALERT_ID)
             .setSmallIcon(R.drawable.ic_clock)
             .setContentTitle(context.getString(R.string.notif_title_over_swipe))
             .setContentText(message)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            .build()
+
+
+        if (isCritical) {
+            nb.setDefaults(NotificationCompat.DEFAULT_LIGHTS and NotificationCompat.DEFAULT_VIBRATE)
+                .setSound(Uri.parse("android.resource://${context.packageName}/${R.raw.pager}"))
+        } else {
+            nb.setDefaults(NotificationCompat.DEFAULT_ALL)
+        }
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(Math.random().toInt(), n)
+        nm.notify(Math.random().toInt(), nb.build())
     }
 
     private fun scheduleNotification(
