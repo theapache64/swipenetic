@@ -100,7 +100,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         })
 
         // Watch for any swipe change
-        viewModel.getSwipeChange().observe(this, Observer { ids ->
+        viewModel.getSwipeChange().observe(this, Observer {
             // Data changed
             viewModel.loadSwipeSessions()
         })
@@ -122,7 +122,6 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                 viewModel.updateSwipe(swipe)
                 dialog.dismiss()
                 sessionsAdapter.notifyItemChanged(position)
-
                 if (position == 0 && DateUtils.isToday(viewModel.getCurrentDate().time)) {
                     // active out changed
                     viewModel.resetWorkAlert(swipeOutTag)
