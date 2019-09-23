@@ -189,6 +189,10 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         return true
     }
 
+
+    /**
+     * To show dialog to change current date
+     */
     private fun showChangeDateCalendar() {
 
         val calendar = viewModel.currentDate
@@ -199,6 +203,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             calendar.value!!.get(Calendar.MONTH),
             calendar.value!!.get(Calendar.DAY_OF_MONTH)
         )
+
         datePickerDialog.datePicker.apply {
             maxDate = Date().time
         }

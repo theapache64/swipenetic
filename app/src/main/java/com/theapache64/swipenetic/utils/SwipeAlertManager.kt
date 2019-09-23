@@ -81,7 +81,7 @@ class SwipeAlertManager @Inject constructor(
         }
 
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.notify(Math.random().toInt(), nb.build())
+        nm.notify(4355, nb.build())
     }
 
     private fun scheduleNotification(

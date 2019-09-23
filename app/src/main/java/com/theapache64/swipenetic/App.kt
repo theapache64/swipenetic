@@ -4,6 +4,7 @@ package com.theapache64.swipenetic
 import android.app.*
 import android.content.Context
 import android.os.Build
+import androidx.annotation.StringRes
 import com.theapache64.swipenetic.di.components.DaggerAppComponent
 import com.theapache64.swipenetic.di.modules.AppModule
 import com.theapache64.twinkill.TwinKill
@@ -51,16 +52,36 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
         )
 
         // Create notification channel
-        createNotificationChannel()
+        createNotificationChannel(
+            CHANNEL_TIMER_ID,
+            R.string.channel_timer_name,
+            R.string.channel_time_desc,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
+
+        createNotificationChannel(
+            CHANNEL_ALERT_ID,
+            R.string.channel_alert_name,
+            R.string.channel_alert_desc,
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannel(
+        channelId: String,
+        @StringRes nameRes: Int,
+        @StringRes descRes: Int,
+        importance: Int
+    ) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.channel_timer_name)
-            val descriptionText = getString(R.string.channel_time_desc)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_TIMER_ID, name, importance).apply {
+
+            // Creating timer channel
+            val name = getString(nameRes)
+            val descriptionText = getString(descRes)
+            val channel = NotificationChannel(channelId, name, importance).apply {
                 description = descriptionText
             }
             // Register the channel with the system
