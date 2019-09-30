@@ -15,7 +15,7 @@ object SwipeTagsDialog {
     fun create(
         context: Context,
         callback: Callback
-    ): AlertDialog {
+    ): Dialog {
 
         val layoutInflater = LayoutInflater.from(context)
         val view = LayoutSwipeTagAlertBinding.inflate(layoutInflater, null, false)

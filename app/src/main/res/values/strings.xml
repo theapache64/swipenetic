@@ -27,4 +27,7 @@
     <string name="notif_title_over_swipe">Over Swipe Out</string>
     <string name="channel_alert_name">Swipe Out Alert</string>
     <string name="channel_alert_desc">To alert about remaining/exceeded swipe out time</string>
+    <string name="notif_title_balance_time">Balance Time</string>
+    <string name="notif_msg_over_swipe_out">\"You have spent more than %d minutes in %s\"</string>
+    <string name="notif_msg_rem_time">You have %d %s remaining in %s</string>
 </resources>

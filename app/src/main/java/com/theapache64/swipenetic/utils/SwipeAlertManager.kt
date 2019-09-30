@@ -3,6 +3,7 @@ package com.theapache64.swipenetic.utils
 import android.app.NotificationManager
 import android.content.Context
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -54,28 +55,35 @@ class SwipeAlertManager @Inject constructor(
     ) {
         val minRem = TimeUnit.MILLISECONDS.toMinutes(timeRemainingInMillis)
         val minOrMins = if (minRem <= 1) "minute" else "minutes"
-        val message = "You have $minRem $minOrMins remaining in ${swipeOutTag.label}"
-        notify(context, message, false)
+        val message =
+            context.getString(R.string.notif_msg_rem_time, minRem, minOrMins, swipeOutTag.label)
+        notify(context, R.string.notif_title_balance_time, message, false)
     }
 
     private fun notifyOverSwipeOut(context: Context, swipeOutTag: SwipeOutTag) {
         val timeSpent = TimeUnit.MILLISECONDS.toMinutes(swipeOutTag.maxTimeAllowedPerDayInMillis)
-        val message = "You have spent more than $timeSpent minutes in ${swipeOutTag.label}"
-        notify(context, message, true)
+        val message =
+            context.getString(R.string.notif_msg_over_swipe_out, timeSpent, swipeOutTag.label)
+        notify(context, R.string.notif_title_over_swipe, message, true)
     }
 
-    private fun notify(context: Context, message: String, isCritical: Boolean) {
+    private fun notify(
+        context: Context,
+        @StringRes title: Int,
+        message: String,
+        isCritical: Boolean
+    ) {
 
 
         val nb = NotificationCompat.Builder(context, App.CHANNEL_ALERT_ID)
             .setSmallIcon(R.drawable.ic_clock)
-            .setContentTitle(context.getString(R.string.notif_title_over_swipe))
+            .setContentTitle(context.getString(title))
             .setContentText(message)
 
 
         if (isCritical) {
             nb.setDefaults(NotificationCompat.DEFAULT_LIGHTS and NotificationCompat.DEFAULT_VIBRATE)
-                .setSound(Uri.parse("android.resource://${context.packageName}/${R.raw.pager}"))
+                .setSound(Uri.parse("android.resource://${context.packageName}/${R.raw.danger}"))
         } else {
             nb.setDefaults(NotificationCompat.DEFAULT_ALL)
         }
