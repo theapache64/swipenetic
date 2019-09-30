@@ -59,7 +59,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
-
         createNotificationChannel(
             CHANNEL_ALERT_ID,
             R.string.channel_alert_name,

@@ -30,4 +30,9 @@
     <string name="notif_title_balance_time">Balance Time</string>
     <string name="notif_msg_over_swipe_out">\"You have spent more than %d minutes in %s\"</string>
     <string name="notif_msg_rem_time">You have %d %s remaining in %s</string>
+    <string name="title_update_failed">Error</string>
+    <string name="msg_update_failed">Something went wrong while checking for update. Please check your internet connection</string>
+    <string name="title_update_available">Update</string>
+    <string name="msg_update_available">Hey, seems like there\'s a new version available. </string>
+    <string name="action_update">UPDATE</string>
 </resources>

@@ -1,8 +1,12 @@
 package com.theapache64.swipenetic.ui.activities.splash
 
 
+import android.content.DialogInterface
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -56,17 +60,26 @@ class SplashActivity : BaseAppCompatActivity(), SplashHandler {
         })
 
 
+        checkAppUpdate()
+    }
+
+    private fun checkAppUpdate() {
+
         val appUpdater = AppUpdaterUtils(this)
             .setUpdateFrom(UpdateFrom.GITHUB)
             .setGitHubUserAndRepo("theapache64", "swipenetic")
             .withListener(object : AppUpdaterUtils.UpdateListener {
                 override fun onSuccess(update: Update?, isUpdateAvailable: Boolean?) {
-                    info("Update found : $update")
-                    startSplashTimer()
+                    info("Update found -> $update -> $isUpdateAvailable")
+                    if (isUpdateAvailable == true && update != null) {
+                        onUpdateAvailable(update.urlToDownload.toString())
+                    } else {
+                        startSplashTimer()
+                    }
                 }
 
                 override fun onFailed(error: AppUpdaterError?) {
-                    info("Update failed")
+                    onUpdateFailed()
                 }
 
             })
@@ -74,10 +87,44 @@ class SplashActivity : BaseAppCompatActivity(), SplashHandler {
         appUpdater.start()
     }
 
+    private fun onUpdateAvailable(url: String) {
+
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.title_update_available)
+            .setMessage(R.string.msg_update_available)
+            .setCancelable(false)
+            .setPositiveButton(R.string.action_update) { _: DialogInterface, _: Int ->
+                open(url)
+            }
+            .create()
+
+        dialog.show()
+    }
+
+    private fun open(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(url)
+        startActivity(intent)
+        finish()
+    }
+
     private fun startSplashTimer() {
         Handler().postDelayed({
             viewModel.goToNextScreen()
         }, SPLASH_DURATION)
+    }
+
+    fun onUpdateFailed() {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(R.string.title_update_failed)
+            .setMessage(R.string.msg_update_failed)
+            .setCancelable(false)
+            .setPositiveButton(R.string.action_retry) { _: DialogInterface, _: Int ->
+                checkAppUpdate()
+            }
+            .create()
+
+        dialog.show()
     }
 
 
