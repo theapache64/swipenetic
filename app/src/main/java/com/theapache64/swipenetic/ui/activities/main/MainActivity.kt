@@ -1,16 +1,16 @@
 package com.theapache64.swipenetic.ui.activities.main
 
 
-import android.app.DatePickerDialog
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.DatePicker
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -31,6 +31,7 @@ import com.theapache64.twinkill.ui.widgets.LoadingView
 import com.theapache64.twinkill.utils.Resource
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import com.theapache64.twinkill.utils.extensions.toast
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import dagger.android.AndroidInjection
 import java.util.*
 import javax.inject.Inject
@@ -44,6 +45,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
     lateinit var factory: ViewModelProvider.Factory
     private lateinit var viewModel: MainViewModel
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -59,12 +61,12 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         val lvSwipeSessions = binding.iContentMain.lvSwipeSessions
         lvSwipeSessions.setRetryCallback(object : LoadingView.RetryCallback {
             override fun onRetryClicked() {
-                viewModel.loadSwipeSessions()
+                viewModel.changeDate()
             }
         })
 
         binding.iContentMain.csrlMain.setOnRefreshListener {
-            viewModel.loadSwipeSessions()
+            viewModel.changeDate()
         }
 
         // Watching for swipe sessions
@@ -93,6 +95,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                     viewModel.checkAndStartTotalInSwipeCounting()
                 }
                 Resource.Status.ERROR -> {
+                    viewModel.resetInTimeToZero()
                     binding.iContentMain.gContentMain.visibility = View.GONE
                     lvSwipeSessions.showError(it.message!!)
                 }
@@ -102,7 +105,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         // Watch for any swipe change
         viewModel.getSwipeChange().observe(this, Observer {
             // Data changed
-            viewModel.loadSwipeSessions()
+            viewModel.changeDate()
         })
 
         // Watch for date
@@ -168,7 +171,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         when (item.itemId) {
 
             R.id.action_show_summary -> {
-                if (binding.iContentMain.rvSwipeSessions.adapter != null) {
+                if (viewModel.hasSwipeSessions()) {
                     startActivity(
                         SummaryActivity.getStartIntent(
                             this,
@@ -183,6 +186,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
             R.id.action_change_date -> {
                 showChangeDateCalendar()
             }
+
             else -> return super.onOptionsItemSelected(item)
         }
 
@@ -194,32 +198,33 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
      * To show dialog to change current date
      */
     private fun showChangeDateCalendar() {
-
         val calendar = viewModel.currentDate
-        val datePickerDialog = DatePickerDialog(
+        val picker = DatePickerDialog.newInstance(
             this,
-            this,
-            calendar.value!!.get(Calendar.YEAR),
-            calendar.value!!.get(Calendar.MONTH),
-            calendar.value!!.get(Calendar.DAY_OF_MONTH)
+            calendar.value
         )
 
-        datePickerDialog.datePicker.apply {
-            maxDate = Date().time
-        }
-
-        datePickerDialog.show()
+        picker.selectableDays = viewModel.getSelectableDates()
+        picker.show(supportFragmentManager, null)
     }
 
-
-    override fun onDateSet(p0: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        viewModel.loadSwipeSessions(
+    override fun onDateSet(view: DatePickerDialog?, year: Int, monthOfYear: Int, dayOfMonth: Int) {
+        viewModel.changeDate(
             Calendar.getInstance().apply {
                 set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month)
+                set(Calendar.MONTH, monthOfYear)
                 set(Calendar.DAY_OF_MONTH, dayOfMonth)
             }
         )
+    }
+
+
+    override fun onPrevDateClicked() {
+        viewModel.changeDateToPrev()
+    }
+
+    override fun onNextDateClicked() {
+        viewModel.changeDateToNext()
     }
 
     companion object {

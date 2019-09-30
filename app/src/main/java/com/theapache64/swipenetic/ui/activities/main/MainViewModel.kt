@@ -3,6 +3,7 @@ package com.theapache64.swipenetic.ui.activities.main
 
 import android.app.Application
 import android.text.format.DateUtils
+import androidx.databinding.ObservableBoolean
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -27,13 +28,27 @@ class MainViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
+
+    private var selectableDates: Array<Calendar>? = null
+
     val currentDate = MutableLiveData<Calendar>()
     private val swipeSessions = Transformations.switchMap(currentDate) { date ->
         swipeRepository.getSwipeSessions(date.time)
     }
 
+    val isNextDateAvailable = ObservableBoolean(false)
     val totalInSwipe = ObservableField("00:00:00")
     private val swipeTimeRepeater = Repeater(1000)
+
+    init {
+        swipeRepository.getSelectableDates { dates ->
+            val calList = mutableListOf<Calendar>()
+            for (date in dates) {
+                calList.add(DateUtils2.fromDDMMYYY(date))
+            }
+            this.selectableDates = calList.toTypedArray()
+        }
+    }
 
     fun checkAndStartTotalInSwipeCounting() {
 
@@ -73,15 +88,21 @@ class MainViewModel @Inject constructor(
     /**
      * Sets new date
      */
-    fun loadSwipeSessions(newDate: Calendar) {
+    fun changeDate(newDate: Calendar) {
         this.currentDate.value = newDate
+        if (DateUtils.isToday(newDate.time.time) || newDate.after(Date())) {
+            this.isNextDateAvailable.set(false)
+        } else {
+            this.isNextDateAvailable.set(true)
+        }
     }
 
-    fun loadSwipeSessions() {
-        this.currentDate.value = Calendar.getInstance().apply {
+    fun changeDate() {
+        val newDate = Calendar.getInstance().apply {
             val newTime = currentDate.value ?: Calendar.getInstance()
             time = newTime.time
         }
+        changeDate(newDate)
     }
 
 
@@ -109,5 +130,31 @@ class MainViewModel @Inject constructor(
 
         // creating new work alert
         swipeAlertManager.scheduleAlert(getApplication(), swipeOutTag)
+    }
+
+    fun changeDateToPrev() {
+        addDate(-1)
+    }
+
+    private fun addDate(dayCount: Int) {
+        val newTime = currentDate.value ?: Calendar.getInstance()
+        newTime.add(Calendar.DATE, dayCount)
+        changeDate(newTime)
+    }
+
+    fun hasSwipeSessions(): Boolean {
+        return swipeSessions.value?.data?.isNotEmpty() ?: false
+    }
+
+    fun resetInTimeToZero() {
+        this.totalInSwipe.set("00:00:00")
+    }
+
+    fun changeDateToNext() {
+        addDate(1)
+    }
+
+    fun getSelectableDates(): Array<Calendar>? {
+        return selectableDates
     }
 }

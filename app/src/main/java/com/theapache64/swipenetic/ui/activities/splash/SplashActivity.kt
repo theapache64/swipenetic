@@ -55,6 +55,7 @@ class SplashActivity : BaseAppCompatActivity(), SplashHandler {
         }, SPLASH_DURATION)
 
 
+
     }
 
 

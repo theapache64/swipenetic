@@ -6,6 +6,12 @@ import java.util.concurrent.TimeUnit
 
 object DateUtils2 {
 
+    /**
+     * Sample : 31-12-2019
+     */
+    private val FORMAT_DD_MM_YYYY by lazy { SimpleDateFormat("dd-MM-yyyy", Locale.US) }
+
+
     private val FORMAT_HH_mm_ss by lazy {
         getTimeZoneWithUTC("HH:mm:ss")
 
@@ -56,5 +62,11 @@ object DateUtils2 {
 
             else -> "NONE: $seconds"
         }
+    }
+
+    fun fromDDMMYYY(date: String): Calendar {
+        val cal = Calendar.getInstance()
+        cal.time = FORMAT_DD_MM_YYYY.parse(date)!!
+        return cal
     }
 }

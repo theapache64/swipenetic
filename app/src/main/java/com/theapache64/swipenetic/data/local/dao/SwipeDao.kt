@@ -24,4 +24,7 @@ interface SwipeDao {
 
     @Update
     fun updateSwipe(swipe: Swipe)
+
+    @Query("SELECT strftime('%d-%m-%Y', timestamp / 1000, 'unixepoch') as dates FROM swipes GROUP BY dates;")
+    fun getAllDates(): List<String>
 }

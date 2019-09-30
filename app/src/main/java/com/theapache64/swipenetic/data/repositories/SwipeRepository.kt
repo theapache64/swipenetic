@@ -334,6 +334,12 @@ class SwipeRepository @Inject constructor(
         }
     }
 
+    fun getSelectableDates(callback: (List<String>) -> Unit) {
+        appExecutors.diskIO().execute {
+            val dates = swipeDao.getAllDates()
+            callback(dates)
+        }
+    }
 
 
 }

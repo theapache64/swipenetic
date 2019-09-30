@@ -74,12 +74,10 @@ class SwipeAlertManager @Inject constructor(
         isCritical: Boolean
     ) {
 
-
         val nb = NotificationCompat.Builder(context, App.CHANNEL_ALERT_ID)
             .setSmallIcon(R.drawable.ic_clock)
             .setContentTitle(context.getString(title))
             .setContentText(message)
-
 
         if (isCritical) {
             nb.setDefaults(NotificationCompat.DEFAULT_LIGHTS and NotificationCompat.DEFAULT_VIBRATE)
