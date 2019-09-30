@@ -79,6 +79,9 @@ dependencies {
     // DatePicker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 
+    // App Updater
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
+
     // Test
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.mockito:mockito-core:$mockito_version"
