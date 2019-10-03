@@ -35,4 +35,6 @@
     <string name="title_update_available">Update</string>
     <string name="msg_update_available">Hey, seems like there\'s a new version available. </string>
     <string name="action_update">UPDATE</string>
+    <string name="action_restart_app">RESTART APP</string>
+    <string name="error_tile_add_ins">Please add tile, then press \'RESTART APP\'</string>
 </resources>

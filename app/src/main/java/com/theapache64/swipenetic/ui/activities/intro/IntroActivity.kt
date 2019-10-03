@@ -11,6 +11,7 @@ import com.theapache64.swipenetic.databinding.ActivityIntroBinding
 import com.theapache64.swipenetic.ui.activities.main.MainActivity
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
 import com.theapache64.twinkill.utils.extensions.bindContentView
+import com.theapache64.twinkill.utils.extensions.toast
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -44,6 +45,8 @@ class IntroActivity : BaseAppCompatActivity(), IntroHandler {
             if (isAdded) {
                 startActivity(MainActivity.getStartIntent(this))
                 finish()
+            } else {
+                toast(R.string.error_tile_add_ins)
             }
         })
 
@@ -51,9 +54,8 @@ class IntroActivity : BaseAppCompatActivity(), IntroHandler {
         binding.viewModel = viewModel
     }
 
-    override fun onResume() {
-        super.onResume()
 
+    override fun onRestartClicked() {
         viewModel.checkIfTileAdded()
     }
 }

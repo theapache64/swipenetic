@@ -19,6 +19,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tv_intro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -27,6 +28,17 @@
             app:layout_constraintEnd_toEndOf="@id/iv_logo"
             app:layout_constraintStart_toStartOf="@id/iv_logo"
             app:layout_constraintTop_toBottomOf="@id/iv_logo" />
+
+        <Button
+            android:id="@+id/b_restart"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->handler.onRestartClicked()}"
+            android:text="@string/action_restart_app"
+            app:layout_constraintEnd_toEndOf="@id/tv_intro"
+            app:layout_constraintStart_toStartOf="@id/tv_intro"
+            app:layout_constraintTop_toBottomOf="@id/tv_intro" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
