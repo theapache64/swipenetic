@@ -10,8 +10,8 @@ android {
         applicationId "com.theapache64.swipenetic"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 10006
-        versionName "1.0.0-alpha06"
+        versionCode 10007
+        versionName "1.0.0-alpha07"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -78,9 +78,6 @@ dependencies {
 
     // DatePicker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
-
-    // App Updater
-    implementation 'com.github.javiersantos:AppUpdater:2.7'
 
     // Test
     testImplementation "junit:junit:$junit_version"

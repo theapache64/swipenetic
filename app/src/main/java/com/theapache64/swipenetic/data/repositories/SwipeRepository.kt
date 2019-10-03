@@ -276,7 +276,7 @@ class SwipeRepository @Inject constructor(
     }
 
 
-    fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeOutTag, Long> {
+    private fun getSwipeTagWithTotalTimeSpent(swipes: List<Swipe>): Map<SwipeOutTag, Long> {
 
         val map = mutableMapOf<SwipeOutTag, Long>()
 
@@ -337,6 +337,7 @@ class SwipeRepository @Inject constructor(
     fun getSelectableDates(callback: (List<String>) -> Unit) {
         appExecutors.diskIO().execute {
             val dates = swipeDao.getAllDates()
+
             callback(dates)
         }
     }
