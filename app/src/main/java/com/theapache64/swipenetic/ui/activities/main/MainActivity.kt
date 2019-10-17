@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.Menu
@@ -15,6 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.databinding.ActivityMainBinding
@@ -32,11 +33,25 @@ import com.theapache64.twinkill.utils.Resource
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import com.theapache64.twinkill.utils.extensions.toast
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import dagger.android.AndroidInjection
 import java.util.*
 import javax.inject.Inject
 
 class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDateSetListener {
+
+    companion object {
+        private const val CHANGE_START_TIME = 0
+        private const val CHANGE_OUT_TAG = 1
+
+        const val ID = R.id.MAIN_ACTIVITY_ID
+
+        fun getStartIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            return intent
+        }
+
+    }
 
 
     private lateinit var binding: ActivityMainBinding
@@ -83,11 +98,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                     lvSwipeSessions.hideLoading()
                     val sessions = it.data!!
                     this.sessionsAdapter = SwipeSessionsAdapter(this, sessions) { position ->
-                        info("Clicked")
-                        val session = sessions[position]
-                        if (session.type == Swipe.Type.OUT) {
-                            setSwipeTag(position, session.startSwipe)
-                        }
+                        onSwipeSessionClicked(position, sessions[position])
                     }
                     startUpdatingFirstItem(sessionsAdapter, sessions)
                     binding.iContentMain.gContentMain.visibility = View.VISIBLE
@@ -116,6 +127,97 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
                 }
             }
         })
+    }
+
+    private fun onSwipeSessionClicked(position: Int, session: SwipeSession) {
+
+        val disabledIndices = if (session.type == Swipe.Type.IN) {
+            // thi is a IN session, disable tag changing option
+            intArrayOf(CHANGE_OUT_TAG)
+        } else {
+            null
+        }
+
+        MaterialDialog(this).show {
+            listItems(
+                res = R.array.menu_swipe_session,
+                disabledIndices = disabledIndices
+            ) { materialDialog: MaterialDialog, index: Int, charSequence: CharSequence ->
+
+                when (index) {
+
+                    CHANGE_START_TIME -> {
+                        // Change in time
+                        changeStartTime(session, position)
+                    }
+
+                    CHANGE_OUT_TAG -> {
+                        if (session.type == Swipe.Type.OUT) {
+                            setSwipeTag(position, session.startSwipe)
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    private fun changeStartTime(session: SwipeSession, position: Int) {
+
+        val cal = Calendar.getInstance().apply {
+            time = session.startSwipe.timestamp
+        }
+
+        val timePicker = TimePickerDialog.newInstance(
+            { view, hourOfDay, minute, second ->
+
+                // Changing swipe time
+                val swipe = session.startSwipe.apply {
+                    timestamp = cal.apply {
+                        cal.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                        cal.set(Calendar.MINUTE, minute)
+                    }.time
+                }
+
+                // Updating swipe time
+                viewModel.updateSwipe(swipe)
+                sessionsAdapter.notifyItemChanged(position)
+            },
+            cal.get(Calendar.HOUR_OF_DAY),
+            cal.get(Calendar.MINUTE),
+            false
+        ).apply {
+
+
+            // Setting max time
+            val maxCal = Calendar.getInstance().apply {
+                time = session.endSwipe?.timestamp ?: Date()
+            }
+
+            setMaxTime(
+                maxCal.get(Calendar.HOUR_OF_DAY),
+                maxCal.get(Calendar.MINUTE),
+                0
+            )
+
+            // Set min time
+            if (viewModel.hasPreviousSwipeSessionForItemIn(position)) {
+                val prevSession = viewModel.getSwipeSessionOrCrash(position + 1)
+                val minCal = Calendar.getInstance().apply {
+                    time = prevSession.startSwipe.timestamp
+                }
+                setMinTime(
+                    minCal.get(Calendar.HOUR_OF_DAY),
+                    minCal.get(Calendar.MINUTE),
+                    0
+                )
+            }
+
+
+        }
+
+        timePicker.show(supportFragmentManager, null)
     }
 
     private fun setSwipeTag(position: Int, swipe: Swipe) {
@@ -227,12 +329,4 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         viewModel.changeDateToNext()
     }
 
-    companion object {
-        const val ID = R.id.MAIN_ACTIVITY_ID
-
-        fun getStartIntent(context: Context): Intent {
-            val intent = Intent(context, MainActivity::class.java)
-            return intent
-        }
-    }
 }

@@ -14,6 +14,7 @@ import com.theapache64.swipenetic.data.local.entities.Swipe
 import com.theapache64.swipenetic.data.repositories.GeneralPrefRepository
 import com.theapache64.swipenetic.data.repositories.SwipeRepository
 import com.theapache64.swipenetic.models.SwipeOutTag
+import com.theapache64.swipenetic.models.SwipeSession
 import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.swipenetic.utils.SwipeAlertManager
@@ -157,5 +158,14 @@ class MainViewModel @Inject constructor(
 
     fun getSelectableDates(): Array<Calendar>? {
         return selectableDates
+    }
+
+    fun getSwipeSessionOrCrash(position: Int): SwipeSession {
+        return swipeSessions.value!!.data!![position]
+    }
+
+    fun hasPreviousSwipeSessionForItemIn(position: Int): Boolean {
+        val totalSwipeSessions = swipeSessions.value?.data?.size ?: 0
+        return totalSwipeSessions > 1 && position != (totalSwipeSessions - 1)
     }
 }

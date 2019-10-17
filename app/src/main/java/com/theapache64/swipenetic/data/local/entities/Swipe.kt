@@ -11,7 +11,7 @@ import java.util.*
     tableName = "swipes"
 )
 data class Swipe(
-    @ColumnInfo(name = "timestamp") val timestamp: Date,
+    @ColumnInfo(name = "timestamp") var timestamp: Date,
     @ColumnInfo(name = "type") val type: Type,
     @ColumnInfo(name = "outTag") var outTag: SwipeOutTag = SwipeOutTag.OTHER
 ) : Serializable {
