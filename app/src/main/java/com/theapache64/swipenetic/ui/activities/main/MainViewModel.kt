@@ -148,6 +148,7 @@ class MainViewModel @Inject constructor(
 
     fun resetInTimeToZero() {
         this.totalInSwipe.set("00:00:00")
+        swipeTimeRepeater.cancel()
     }
 
     fun changeDateToNext() {
