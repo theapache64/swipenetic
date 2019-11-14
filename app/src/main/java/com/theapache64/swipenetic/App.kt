@@ -66,6 +66,7 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
             NotificationManager.IMPORTANCE_DEFAULT
         )
 
+        // This is some comment
     }
 
     private fun createNotificationChannel(
