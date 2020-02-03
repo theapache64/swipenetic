@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
 import com.afollestad.materialdialogs.list.listItems
 import com.theapache64.swipenetic.R
 import com.theapache64.swipenetic.data.local.entities.Swipe
@@ -73,6 +75,8 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         binding.viewModel = viewModel
         binding.handler = this
 
+        binding.iContentMain.rvSwipeSessions.itemAnimator = null
+
         val lvSwipeSessions = binding.iContentMain.lvSwipeSessions
         lvSwipeSessions.setRetryCallback(object : LoadingView.RetryCallback {
             override fun onRetryClicked() {
@@ -83,6 +87,27 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         binding.iContentMain.csrlMain.setOnRefreshListener {
             viewModel.changeDate()
         }
+
+        // Watching for add session
+        viewModel.getShowAddSessionDialog().observe(this, Observer { swipeType ->
+            val title = if (swipeType == Swipe.Type.IN) {
+                R.string.main_dialog_title_add_in_swipe
+            } else {
+                R.string.main_dialog_title_add_out_swipe
+            }
+
+            MaterialDialog(this).show {
+                title(title)
+                input(
+                    hintRes = R.string.main_dialog_input_hint_enter_minutes,
+                    inputType = InputType.TYPE_CLASS_NUMBER,
+                    allowEmpty = false
+                ) { _: MaterialDialog, charSequence: CharSequence ->
+                    viewModel.addSession(charSequence.toString().toInt())
+                }
+                positiveButton(R.string.action_add_session)
+            }
+        })
 
         // Watching for swipe sessions
         viewModel.getSwipeSessions().observe(this, Observer {
@@ -273,7 +298,7 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         when (item.itemId) {
 
             R.id.action_add_session -> {
-                viewModel.addSession(10)
+                viewModel.showAddSessionDialog()
             }
 
             R.id.action_show_summary -> {

@@ -171,20 +171,35 @@ class MainViewModel @Inject constructor(
 
     fun addSession(minutes: Int) {
         swipeRepository.getLastSwipeToday { lastSwipe ->
-            if (lastSwipe != null) {
-                val newSwipeType =
-                    if (lastSwipe.type == Swipe.Type.IN) Swipe.Type.OUT else Swipe.Type.IN
+            val newSwipeType =
+                if (lastSwipe?.type == Swipe.Type.IN) {
+                    Swipe.Type.OUT
+                } else {
+                    Swipe.Type.IN
+                }
 
-                val minutesBack = Calendar.getInstance().apply {
-                    add(Calendar.MINUTE, -minutes)
-                }.time
+            val minutesBack = Calendar.getInstance().apply {
+                add(Calendar.MINUTE, -minutes)
+            }.time
 
-                swipeRepository.insertSwipe(
-                    Swipe(
-                        minutesBack,
-                        newSwipeType
-                    )
+            swipeRepository.insertSwipe(
+                Swipe(
+                    minutesBack,
+                    newSwipeType
                 )
+            )
+        }
+    }
+
+    private val showAddSessionDialog = MutableLiveData<Swipe.Type>()
+    fun getShowAddSessionDialog(): LiveData<Swipe.Type> = showAddSessionDialog
+
+    fun showAddSessionDialog() {
+        swipeRepository.getLastSwipeToday { lastSwipe ->
+            this.showAddSessionDialog.value = if (lastSwipe?.type == Swipe.Type.IN) {
+                Swipe.Type.OUT
+            } else {
+                Swipe.Type.IN
             }
         }
     }

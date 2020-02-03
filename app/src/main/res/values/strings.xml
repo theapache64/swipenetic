@@ -38,4 +38,7 @@
     <string name="action_restart_app">RESTART APP</string>
     <string name="error_tile_add_ins">Please add tile, then press \'RESTART APP\'</string>
     <string name="action_add_session">Add Session</string>
+    <string name="main_dialog_title_add_in_swipe">Add IN Swipe</string>
+    <string name="main_dialog_title_add_out_swipe">Add OUT swipe</string>
+    <string name="main_dialog_input_hint_enter_minutes">Enter minutes here</string>
 </resources>
