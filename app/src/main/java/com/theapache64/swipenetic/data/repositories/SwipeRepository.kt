@@ -14,6 +14,7 @@ import com.theapache64.twinkill.utils.DateUtils
 import com.theapache64.twinkill.utils.Resource
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
 
 class SwipeRepository @Inject constructor(
     private val appExecutors: AppExecutors,
@@ -26,6 +27,12 @@ class SwipeRepository @Inject constructor(
         }
     }
 
+
+    fun insertSwipe(swipe: Swipe) {
+        appExecutors.diskIO().execute {
+            swipeDao.insert(swipe)
+        }
+    }
 
     fun getLastSwipeToday(onSwipeToday: (Swipe?) -> Unit) {
         appExecutors.diskIO().execute {
@@ -56,7 +63,7 @@ class SwipeRepository @Inject constructor(
     /**
      * To get in time in milliseconds from swipe list
      */
-    fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
+    private fun getTotalInSwipesInMillis(swipes: List<Swipe>): Long {
         when {
             swipes.isEmpty() -> return 0
             swipes.size == 1 -> return (System.currentTimeMillis() - swipes.first().timestamp.time)
@@ -108,7 +115,7 @@ class SwipeRepository @Inject constructor(
 
         val swipeSessions = mutableListOf<SwipeSession>()
 
-        for (i in 0 until swipes.size step 2) {
+        for (i in swipes.indices step 2) {
 
             val inSwipe = swipes[i]
             val outSwipeIndex = i + 1
@@ -117,11 +124,14 @@ class SwipeRepository @Inject constructor(
 
                 val outSwipe = swipes[outSwipeIndex]
 
+
                 // In Swipe
+                val duration = abs(outSwipe.timestamp.time - inSwipe.timestamp.time)
+
                 swipeSessions.add(
                     SwipeSession(
                         Swipe.Type.IN,
-                        outSwipe.timestamp.time - inSwipe.timestamp.time,
+                        duration,
                         null,
                         DateUtils2.tohmma(inSwipe.timestamp),
                         DateUtils2.tohmma(outSwipe.timestamp),
@@ -135,10 +145,12 @@ class SwipeRepository @Inject constructor(
                     val inSwipeTwo = swipes[inSwipeTwoIndex]
 
                     // Out swipe
+                    val duration1 = abs(inSwipeTwo.timestamp.time - outSwipe.timestamp.time)
+
                     swipeSessions.add(
                         SwipeSession(
                             Swipe.Type.OUT,
-                            inSwipeTwo.timestamp.time - outSwipe.timestamp.time,
+                            duration1,
                             outSwipe.outTag,
                             DateUtils2.tohmma(outSwipe.timestamp),
                             DateUtils2.tohmma(inSwipeTwo.timestamp),
@@ -226,7 +238,7 @@ class SwipeRepository @Inject constructor(
                     SwipeSummary(
                         R.drawable.ic_clock,
                         "Total time spent",
-                        DateUtils2.getDuration(totalSwipeInMs)
+                        DateUtils2.getDuration(totalSwipeInMs) ?: SwipeSummary.KEY_FORGOT_TO_OUT
                     )
                 )
 
@@ -237,8 +249,7 @@ class SwipeRepository @Inject constructor(
                     SwipeSummary(
                         R.drawable.ic_clock,
                         "Total in time",
-                        DateUtils2.getDuration(inSwipeInMs)
-
+                        DateUtils2.getDuration(inSwipeInMs) ?: SwipeSummary.KEY_FORGOT_TO_OUT
                     )
                 )
 
@@ -250,7 +261,7 @@ class SwipeRepository @Inject constructor(
                     SwipeSummary(
                         R.drawable.ic_clock,
                         "Total out time",
-                        DateUtils2.getDuration(totalOutSwipeInMs)
+                        DateUtils2.getDuration(totalOutSwipeInMs) ?: SwipeSummary.KEY_FORGOT_TO_OUT
                     )
                 )
 
@@ -262,6 +273,7 @@ class SwipeRepository @Inject constructor(
                             tagAndTime.key.image,
                             tagAndTime.key.label,
                             DateUtils2.getDuration(tagAndTime.value)
+                                ?: SwipeSummary.KEY_FORGOT_TO_OUT
                         )
                     )
                 }
@@ -280,7 +292,7 @@ class SwipeRepository @Inject constructor(
 
         val map = mutableMapOf<SwipeOutTag, Long>()
 
-        for (i in 0 until swipes.size step 2) {
+        for (i in swipes.indices step 2) {
 
             val outSwipeIndex = i + 1
             if (outSwipeIndex < swipes.size) {

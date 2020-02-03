@@ -168,4 +168,24 @@ class MainViewModel @Inject constructor(
         val totalSwipeSessions = swipeSessions.value?.data?.size ?: 0
         return totalSwipeSessions > 1 && position != (totalSwipeSessions - 1)
     }
+
+    fun addSession(minutes: Int) {
+        swipeRepository.getLastSwipeToday { lastSwipe ->
+            if (lastSwipe != null) {
+                val newSwipeType =
+                    if (lastSwipe.type == Swipe.Type.IN) Swipe.Type.OUT else Swipe.Type.IN
+
+                val minutesBack = Calendar.getInstance().apply {
+                    add(Calendar.MINUTE, -minutes)
+                }.time
+
+                swipeRepository.insertSwipe(
+                    Swipe(
+                        minutesBack,
+                        newSwipeType
+                    )
+                )
+            }
+        }
+    }
 }

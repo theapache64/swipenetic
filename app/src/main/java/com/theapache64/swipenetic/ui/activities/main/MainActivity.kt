@@ -272,6 +272,10 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
 
+            R.id.action_add_session -> {
+                viewModel.addSession(10)
+            }
+
             R.id.action_show_summary -> {
                 if (viewModel.hasSwipeSessions()) {
                     startActivity(

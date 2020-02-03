@@ -40,7 +40,7 @@ object DateUtils2 {
         return toHHmmss(Date(timestamp))
     }
 
-    fun getDuration(durationInMillis: Long): String {
+    fun getDuration(durationInMillis: Long): String? {
 
         return when (val seconds = TimeUnit.MILLISECONDS.toSeconds(durationInMillis)) {
             0L, 1L -> "$seconds second"
@@ -52,6 +52,7 @@ object DateUtils2 {
                 val sec = seconds % 60
                 "$min min $sec sec."
             }
+
             3600L -> "1 hour"
             in 3601..86399 -> {
                 // hour and minute
@@ -60,7 +61,9 @@ object DateUtils2 {
                 "$hour hrs $minute min"
             }
 
-            else -> "NONE: $seconds"
+            else -> {
+                null
+            }
         }
     }
 

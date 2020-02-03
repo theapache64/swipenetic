@@ -12,7 +12,19 @@ data class SwipeSession(
     val startSwipe: Swipe,
     val endSwipe: Swipe?
 ) {
-    var durationString = DateUtils2.getDuration(duration)
+    var durationString =
+        DateUtils2.getDuration(kotlin.math.abs(duration)) ?: SwipeSummary.KEY_FORGOT_TO_OUT
+
+    init {
+        if (duration < 0) {
+            throw IllegalArgumentException("Duration can't be negative ($duration)")
+        }
+
+        if (durationString == SwipeSummary.KEY_FORGOT_TO_OUT) {
+            timeTo = "🤷🏽‍♂️"
+        }
+    }
+
 
     fun isTypeIn(): Boolean {
         return type == Swipe.Type.IN
@@ -20,7 +32,7 @@ data class SwipeSession(
 
     fun update(duration: Long, timeTo: String) {
         this.duration = duration
+        this.durationString = DateUtils2.getDuration(duration) ?: SwipeSummary.KEY_FORGOT_TO_OUT
         this.timeTo = timeTo
-        this.durationString = DateUtils2.getDuration(duration)
     }
 }
