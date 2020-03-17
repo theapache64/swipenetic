@@ -12,11 +12,10 @@ import com.theapache64.twinkill.di.modules.ContextModule
 import com.theapache64.twinkill.googlesans.GoogleSans
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasServiceInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class App : Application(), HasActivityInjector, HasServiceInjector {
+class App : Application(), HasAndroidInjector {
 
     companion object {
         const val CHANNEL_TIMER_ID = "timer"
@@ -29,9 +28,6 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
     @Inject
     lateinit var serviceInjector: DispatchingAndroidInjector<Service>
 
-    override fun serviceInjector(): AndroidInjector<Service> = serviceInjector
-
-    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -90,6 +86,9 @@ class App : Application(), HasActivityInjector, HasServiceInjector {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    @Inject lateinit var androidInjector : DispatchingAndroidInjector<Any>
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
 
 
 }

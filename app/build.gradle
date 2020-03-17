@@ -10,8 +10,8 @@ android {
         applicationId "com.theapache64.swipenetic"
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
-        versionCode 101001
-        versionName "1.0.1-alpha001"
+        versionCode 101002
+        versionName "1.0.1-alpha002"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -29,6 +29,10 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -45,7 +49,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
 
     // Dagger 2
-    def dagger_version = '2.22.1'
+    def dagger_version = '2.27'
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -58,12 +62,12 @@ dependencies {
     implementation 'com.theah64.materialcolors:materialcolors:1.0.0'
 
     // TwinKill
-    def twinkill_version = '1.0.0-alpha02'
+    def twinkill_version = '1.0.0-alpha06'
     implementation "com.theapache64.twinkill:core:$twinkill_version"
     implementation "com.theapache64.twinkill:logger:$twinkill_version"
     implementation "com.theapache64.twinkill:google_sans:$twinkill_version"
 
-    def room_version = "2.2.0-alpha02"
+    def room_version = "2.2.4"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
@@ -74,7 +78,7 @@ dependencies {
     implementation 'com.theapache64.quick-percent:quick-percent:1.0.0-alpha01'
 
     // WorkManager
-    implementation 'androidx.work:work-runtime:2.2.0'
+    implementation 'androidx.work:work-runtime:2.3.3'
 
     // DatePicker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'

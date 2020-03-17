@@ -30,7 +30,6 @@ import com.theapache64.swipenetic.utils.DateUtils2
 import com.theapache64.swipenetic.utils.Repeater
 import com.theapache64.twinkill.logger.info
 import com.theapache64.twinkill.ui.activities.base.BaseAppCompatActivity
-import com.theapache64.twinkill.ui.widgets.LoadingView
 import com.theapache64.twinkill.utils.Resource
 import com.theapache64.twinkill.utils.extensions.bindContentView
 import com.theapache64.twinkill.utils.extensions.toast
@@ -78,11 +77,9 @@ class MainActivity : BaseAppCompatActivity(), MainHandler, DatePickerDialog.OnDa
         binding.iContentMain.rvSwipeSessions.itemAnimator = null
 
         val lvSwipeSessions = binding.iContentMain.lvSwipeSessions
-        lvSwipeSessions.setRetryCallback(object : LoadingView.RetryCallback {
-            override fun onRetryClicked() {
-                viewModel.changeDate()
-            }
-        })
+        lvSwipeSessions.setRetryCallback {
+            viewModel.changeDate()
+        }
 
         binding.iContentMain.csrlMain.setOnRefreshListener {
             viewModel.changeDate()
